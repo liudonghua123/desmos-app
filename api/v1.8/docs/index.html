@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Desmos API v1.8 documentation</title>
+
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+
+    <link rel="stylesheet" href="api_docs-85263b946f20cb7a4be020257fd26a5d90cd09b4.css" />
+
+  </head>
+  <body>
+
+    <div id="navbar" class="navbar " role="navigation">
+      <div class="navbar-inner">
+        <div class="nav">
+          <div class='sticky-nav span4'>
+            <ul>
+              <!-- populated by js -->
+            </ul>
+          </div>
+        </div>
+
+        
+          <span class="brand" id="pageHeader" role="heading" aria-level="1">
+            Desmos API <b class='version'>v1.8</b>
+          </span>
+          <a class="header-rhs-link" href="/api/changelog?lang=en">
+            Change Log
+          </a>
+        
+
+      </div>
+    </div>
+
+    <div class="span4"></div>
+    <div class="span8 main" role="main" aria-labelledby="pageHeader">
+      <h2 id="document-quickstart">Desmos API v1.8</h2>
+<p>Desmos is the dead-simple way to embed rich, interactive math into your web page or web app. Here's how to draw an interactive graph in less than 60 seconds:</p>
+<p><strong>Step 1:</strong> include our secure javascript file:</p>
+<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+<p><strong>Step 2:</strong> add an an element to the page:</p>
+<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"calculator"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"width: 600px; height: 400px;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+<p><strong>Step 3:</strong> add the following lines of javascript:</p>
+<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-keyword">var</span> elt = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'calculator'</span>);
+  <span class="hljs-keyword">var</span> calculator = Desmos.GraphingCalculator(elt);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+<p><strong>Step 4:</strong> Enjoy:</p>
+<div id="quickstart-grapher"></div>
+<p>See <a href="examples/parabola.html">examples/parabola.html</a> to see this example live.</p>
+<p><strong>Preparing for production:</strong> In this example, we used the demo API key <code>dcb31709b452b1cf9dc26972add0fda6</code>. For production use, you should <a href="#document-api-keys">obtain your own API key</a> and supply it as the <code>apiKey</code> parameter in the script URL in step 1.</p>
+<p>To see information about the size of the API file, the <a href="/api/changelog">change log</a>
+contains the gzipped size for each version.</p>
+<h2 id="document-calculator">Graphing Calculator</h2>
+<p>The basic structure of the API is an embeddable <code>GraphingCalculator</code>, which is the page element which will display your axes, grid-lines, equations, and points.</p>
+<h3 id="document-graphing-calculator-constructor">Constructor</h3>
+<h4><em>constructor</em> GraphingCalculator(<em>element</em>, [<em>options</em>])</h4>
+<p>Creates a calculator object to control the calculator embedded in the DOM element specified by <em>element</em>.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">var</span> elt = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'my-calculator'</span>);
+<span class="hljs-keyword">var</span> calculator = Desmos.GraphingCalculator(elt);</code></pre>
+<p>The object returned is a Desmos.GraphingCalculator object, which exposes methods for setting expressions, changing the viewport, etc.</p>
+<p><em>options</em> is an optional object that specifies features that should be included or excluded.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>keypad</td>
+<td>true</td>
+<td>Show the onscreen keypad</td>
+</tr>
+<tr>
+<td>graphpaper</td>
+<td>true</td>
+<td>Show the graphpaper</td>
+</tr>
+<tr>
+<td>expressions</td>
+<td>true</td>
+<td>Show the expressions list</td>
+</tr>
+<tr>
+<td>settingsMenu</td>
+<td>true</td>
+<td>Show the settings wrench, for changing graph display. See <a href="#document-accessibility">Accessibility Notes</a>.</td>
+</tr>
+<tr>
+<td>zoomButtons</td>
+<td>true</td>
+<td>Show onscreen zoom buttons</td>
+</tr>
+<tr>
+<td>showResetButtonOnGraphpaper</td>
+<td>false</td>
+<td>If a <a href="#GraphingCalculator.setDefaultState">default state</a> is set, show an onscreen reset button</td>
+</tr>
+<tr>
+<td>expressionsTopbar</td>
+<td>true</td>
+<td>Show the bar on top of the expressions list</td>
+</tr>
+<tr>
+<td>pointsOfInterest</td>
+<td>true</td>
+<td>Show Points of Interest (POIs) as gray dots that can be clicked on</td>
+</tr>
+<tr>
+<td>trace</td>
+<td>true</td>
+<td>Allow tracing curves to inspect coordinates, and showing point coordinates when clicked</td>
+</tr>
+<tr>
+<td>border</td>
+<td>true</td>
+<td>Add a subtle 1px gray border around the entire calculator</td>
+</tr>
+<tr>
+<td>lockViewport</td>
+<td>false</td>
+<td>Disable user panning and zooming graphpaper</td>
+</tr>
+<tr>
+<td>expressionsCollapsed</td>
+<td>false</td>
+<td>Collapse the expressions list</td>
+</tr>
+<tr>
+<td>capExpressionSize</td>
+<td>false</td>
+<td>Limit the size of an expression to 500 LaTeX tokens</td>
+</tr>
+<tr>
+<td>authorFeatures</td>
+<td>false</td>
+<td>Enable creating <a href="#document-author-features">secret folders &amp; readonly expressions</a></td>
+</tr>
+<tr>
+<td>images</td>
+<td>true</td>
+<td>Allow adding images</td>
+</tr>
+<tr>
+<td>imageUploadCallback</td>
+<td>Desmos.imageFileToDataURL</td>
+<td>Specify custom processing for user-uploaded images. See <a href="#document-image-uploads">Image Uploads</a> for more details.</td>
+</tr>
+<tr>
+<td>folders</td>
+<td>true</td>
+<td>Allow the creation of folders in the expressions list</td>
+</tr>
+<tr>
+<td>notes</td>
+<td>true</td>
+<td>Allow the creation of text notes in the expressions list</td>
+</tr>
+<tr>
+<td>sliders</td>
+<td>true</td>
+<td>Allow the creation of sliders in the expressions list</td>
+</tr>
+<tr>
+<td>actions</td>
+<td>'auto'</td>
+<td>Allow the use of <a href="https://help.desmos.com/hc/en-us/articles/4407725009165-Actions">Actions</a>. May be <code>true</code>, <code>false</code>, or <code>'auto'</code>. When <code>true</code> or <code>false</code>, actions are completely enabled or disabled. When <code>'auto'</code>, actions are enabled, but some associated UI is only displayed after the user enters a valid action. In a future API version, <code>'auto'</code> may become a synonym for <code>true</code>.</td>
+</tr>
+<tr>
+<td>substitutions</td>
+<td>true</td>
+<td>Allow the use of &quot;with&quot; substitutions.</td>
+</tr>
+<tr>
+<td>links</td>
+<td>true</td>
+<td>Allow hyperlinks in notes/folders, and links to help documentation in the expressions list (e.g. regressions with negative R<sup>2</sup> values or plots with unresolved detail)</td>
+</tr>
+<tr>
+<td>qwertyKeyboard</td>
+<td>true</td>
+<td>Display the keypad in QWERTY layout (<em>false</em> shows an alphabetical layout)</td>
+</tr>
+<tr>
+<td>distributions</td>
+<td>true</td>
+<td>Enable/disable functions related to univariate data visualizations, statistical distributions, and hypothesis testing</td>
+</tr>
+<tr>
+<td>restrictedFunctions</td>
+<td>false</td>
+<td>Show a restricted menu of available functions</td>
+</tr>
+<tr>
+<td>forceEnableGeometryFunctions</td>
+<td>false</td>
+<td>Force <code>distance</code> and <code>midpoint</code> functions to be enabled, even if <code>restrictedFunctions</code> is set to <code>true</code>. In that case the geometry functions will also be added to the the &quot;Misc&quot; keypad</td>
+</tr>
+<tr>
+<td>pasteGraphLink</td>
+<td>false</td>
+<td>Paste a valid desmos graph URL to import that graph</td>
+</tr>
+<tr>
+<td>pasteTableData</td>
+<td>true</td>
+<td>Paste validly formatted table data to create a table up to 50 rows</td>
+</tr>
+<tr>
+<td>clearIntoDegreeMode</td>
+<td>false</td>
+<td>When <code>true</code>, clearing the graph through the UI or calling <code>setBlank()</code> will leave the calculator in <code>degreeMode</code>. Note that, if a <a href="#GraphingCalculator.setDefaultState">default state</a> is set, resetting the graph through the UI will result in the calculator's <code>degreeMode</code> matching the mode of that state, regardless of this option.</td>
+</tr>
+<tr>
+<td>colors</td>
+<td><a href="#document-colors">Colors</a></td>
+<td>The color palette that the calculator will cycle through. See the <a href="#document-colors">Colors section</a>.</td>
+</tr>
+<tr>
+<td>autosize</td>
+<td>true</td>
+<td>Determine whether the calculator should automatically resize whenever there are changes to <em>element</em>'s dimensions. If set to <code>false</code> you will need to explicitly call <code>.resize()</code> in certain situations. See <a href="#document-layout">.resize()</a>.</td>
+</tr>
+<tr>
+<td>plotInequalities</td>
+<td>true</td>
+<td>Determine whether the calculator should plot inequalities</td>
+</tr>
+<tr>
+<td>plotImplicits</td>
+<td>true</td>
+<td>Determine whether the calculator should plot implicit equations and inequalities</td>
+</tr>
+<tr>
+<td>plotSingleVariableImplicitEquations</td>
+<td>true</td>
+<td>Determine whether the calculator should plot single-variable implicit equations</td>
+</tr>
+<tr>
+<td>projectorMode</td>
+<td>false</td>
+<td>When <code>true</code>, fonts and line thicknesses are increased to aid legibility.</td>
+</tr>
+<tr>
+<td>decimalToFraction</td>
+<td>true</td>
+<td>When <code>true</code>, users are able to toggle between decimal and fraction output in evaluations if Desmos detects a good rational approximation.</td>
+</tr>
+<tr>
+<td>fontSize</td>
+<td>16</td>
+<td>Base font size.</td>
+</tr>
+<tr>
+<td>invertedColors</td>
+<td>false</td>
+<td>Display the calculator with an inverted color scheme.</td>
+</tr>
+<tr>
+<td>language</td>
+<td>'en'</td>
+<td>Language. See the <a href="#document-languages">Languages section</a> for more information.</td>
+</tr>
+<tr>
+<td>brailleMode</td>
+<td><code>'none'</code></td>
+<td>Set the input and output Braille code for persons using refreshable Braille displays. Valid options are 'nemeth', 'ueb', or 'none'.</td>
+</tr>
+<tr>
+<td>sixKeyInput</td>
+<td>false</td>
+<td>Allow users to write six-dot Braille characters using the Home Row keys (S, D, F, J, K, and L). Requires that brailleMode be 'nemeth' or 'ueb'.</td>
+</tr>
+<tr>
+<td>brailleControls</td>
+<td>true</td>
+<td>Show Braille controls in the settings menu and enable shortcut keys for switching between Braille modes. See <a href="#document-accessibility">Accessibility Notes</a>.</td>
+</tr>
+<tr>
+<td>audio</td>
+<td>true</td>
+<td>Permit the calculator to generate sound (such as tones and related cues for audio trace mode. See <a href="#document-accessibility">Accessibility Notes</a>. See <a href="#document-accessibility">Accessibility Notes</a>.</td>
+</tr>
+<tr>
+<td>zoomFit</td>
+<td>true</td>
+<td>When <code>true</code>, tables and distributions will display an icon that allows the user to automatically snap the viewport to appropriate bounds for viewing that expression.</td>
+</tr>
+<tr>
+<td>forceLogModeRegressions</td>
+<td>false</td>
+<td>When <code>true</code>, all linearizable regression models will have log mode enabled by default, and the checkbox used to toggle log mode will be hidden from the expression interface. See <a href="https://help.desmos.com/hc/en-us/articles/204349605-Log-Mode">this support article</a> for more information.</td>
+</tr>
+</tbody>
+</table>
+<p>In addition to the above configuration options, you may also pass in any of the graph settings
+below as part of the <em>options</em> object. The distinction between configuration options and graph
+settings is that configuration options are properties related to the particular calculator
+instance, while graph settings are properties related to the graph state itself.</p>
+<p>Configuration options do not appear in a serialized graph state, but graph settings do. Therefore
+configuration options will persist through a <code>setState()</code> or a <code>setBlank()</code> call,
+but graph settings will be overwritten whenever a new (possibly blank) state is set.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>degreeMode</td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>When <code>true</code>, trig functions assume arguments are in degrees. Otherwise, arguments are assumed to be in radians.</td>
+</tr>
+<tr>
+<td>showGrid</td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Show or hide grid lines on the graph paper.</td>
+</tr>
+<tr>
+<td>polarMode</td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>When <code>true</code>, use a polar grid. Otherwise, use cartesian grid.</td>
+</tr>
+<tr>
+<td>showXAxis</td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Show or hide the x axis.</td>
+</tr>
+<tr>
+<td>showYAxis</td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Show or hide the y axis.</td>
+</tr>
+<tr>
+<td>xAxisNumbers</td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Show or hide numeric tick labels on the x axis.</td>
+</tr>
+<tr>
+<td>yAxisNumbers</td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Show or hide numeric tick labels on the y axis.</td>
+</tr>
+<tr>
+<td>polarNumbers</td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Show or hide numeric tick labels at successive angles. Only relevant when polarMode is <code>true</code>.</td>
+</tr>
+<tr>
+<td>xAxisStep</td>
+<td>Number</td>
+<td><code>0</code></td>
+<td>Spacing between numeric ticks on the x axis. Will be ignored if set too small to display. When set to <code>0</code>, tick spacing is chosen automatically.</td>
+</tr>
+<tr>
+<td>yAxisStep</td>
+<td>Number</td>
+<td><code>0</code></td>
+<td>Spacing between numeric ticks on the y axis. Will be ignored if set too small to display. When set to <code>0</code>, tick spacing is chosen automatically.</td>
+</tr>
+<tr>
+<td>xAxisMinorSubdivisions</td>
+<td>Number</td>
+<td><code>0</code></td>
+<td>Subdivisions between ticks on the x axis. Must be an integer between <code>0</code> and <code>5</code>. <code>1</code> means that only the major grid lines will be shown. When set to <code>0</code>, subdivisions are chosen automatically.</td>
+</tr>
+<tr>
+<td>yAxisMinorSubdivisions</td>
+<td>Number</td>
+<td><code>0</code></td>
+<td>Subdivisions between ticks on the y axis. Must be an integer between <code>0</code> and <code>5</code>. <code>1</code> means that only the major grid lines will be shown. When set to <code>0</code>, subdivisions are chosen automatically.</td>
+</tr>
+<tr>
+<td>xAxisArrowMode</td>
+<td><a href="#document-axis-arrow-modes">AxisArrowMode</a></td>
+<td><code>NONE</code></td>
+<td>Determines whether to place arrows at one or both ends of the x axis. See <a href="#document-axis-arrow-modes">Axis Arrow Modes</a>.</td>
+</tr>
+<tr>
+<td>yAxisArrowMode</td>
+<td><a href="#document-axis-arrow-modes">AxisArrowMode</a></td>
+<td><code>NONE</code></td>
+<td>Determines whether to place arrows at one or both ends of the y axis. See <a href="#document-axis-arrow-modes">Axis Arrow Modes</a></td>
+</tr>
+<tr>
+<td>xAxisLabel</td>
+<td>String</td>
+<td><code>''</code></td>
+<td>Label placed below the x axis.</td>
+</tr>
+<tr>
+<td>yAxisLabel</td>
+<td>String</td>
+<td><code>''</code></td>
+<td>Label placed beside the y axis.</td>
+</tr>
+<tr>
+<td>randomSeed</td>
+<td>String</td>
+<td><code>''</code></td>
+<td>Global random seed used for generating values from the calculator's built-in <code>random()</code> function. See <a href="#document-randomness">the section on random seeds</a> below.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="document-graphing-calculator-destructor">Destructor</h3>
+<h4 id="GraphingCalculator.destroy">GraphingCalculator.destroy()</h4>
+<p>Destroy the <code>GraphingCalculator</code> instance, unbind event listeners, and free resources. This method should be called whenever a calculator's container element is removed from the DOM. Attempting to call methods on a <code>GraphingCalculator</code> object after it has been destroyed will result in a no-op and log a warning to the console.</p>
+<h2 id="document-saving-and-loading">Saving and loading</h2>
+<h4 id="GraphingCalculator.getState">GraphingCalculator.getState()</h4>
+<p>Returns a javascript object representing the current state of the calculator. Use in conjunction with <em>GraphingCalculator.setState</em> to save and restore calculator states.</p>
+<p>The return value of <em>GraphingCalculator.getState</em> may be serialized to a string using <em>JSON.stringify</em>.</p>
+<p><em>Warning:</em> Calculator states should be treated as opaque values. Manipulating states directly may produce a result that cannot be loaded by <em>GraphingCalculator.setState</em>.</p>
+<h4 id="GraphingCalculator.setState">GraphingCalculator.setState(obj, [options])</h4>
+<p>Reset the calculator to a state previously saved using <em>GraphingCalculator.getState</em>. <em>options</em> is an optional object that controls the behavior of the calculator when setting the state.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>allowUndo</td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>Preserve the undo/redo history.</td>
+</tr>
+<tr>
+<td>remapColors</td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>Remap colors in the saved state to those in the current <code>Calculator.colors</code> object. See the <a href="#document-colors">Colors</a> section.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="GraphingCalculator.setBlank">GraphingCalculator.setBlank([options])</h4>
+<p>Reset the calculator to a blank state. If an <em>options</em> object is present, the <em>allowUndo</em> property serves the same function as it does in <em>GraphingCalculator.setState</em>.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Save the current state of a calculator instance</span>
+<span class="hljs-keyword">var</span> state = calculator.getState();
+
+<span class="hljs-comment">// Use jQuery to post a state to your server for permanent storage</span>
+$.post(<span class="hljs-string">'/myendpoint'</span>, <span class="hljs-built_in">JSON</span>.stringify(state));
+
+<span class="hljs-comment">// Load a state into a calculator instance</span>
+calculator.setState(state);
+
+<span class="hljs-comment">// Reset the calculator to a blank state</span>
+calculator.setBlank();</code></pre>
+<p>To see a working example of saving and loading graphs to/from a server, you can download and run the <a href="https://github.com/desmosinc/desmos-sample-cms/">sample content management system application</a> from our GitHub repository.</p>
+<h4 id="GraphingCalculator.setDefaultState">GraphingCalculator.setDefaultState(obj)</h4>
+<p>Replace the calculator's &quot;Delete All&quot; button (under the &quot;Edit List&quot; menu) with a &quot;Reset&quot; button that will reset the calculator to the state represented by <em>obj</em>. Also, if a default state is set, the &quot;home&quot; zoom button
+will reset the zoom to the viewport associated with the default state instead
+of the usual Desmos default (roughly from -10 to 10, centered at the origin). If
+the <code>showResetButtonOnGraphpaper</code> option is <code>true</code>, a small reset button will
+appear on the graphpaper.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Save the current state of a calculator instance</span>
+<span class="hljs-keyword">var</span> newDefaultState = calculator.getState();
+
+<span class="hljs-comment">// Set a new default state to match the current state</span>
+calculator.setDefaultState(newDefaultState);
+
+<span class="hljs-comment">// From this point forward the "Delete All" button will be replaced with a "Reset"</span>
+<span class="hljs-comment">// button that will set the calculator to the state stored in newDefaultState,</span>
+<span class="hljs-comment">// and the "home" zoom button will restore the viewport to that of newDefaultState.</span></code></pre>
+<p>For a working example see <a href="examples/default-state.html">examples/default-state.html</a>.</p>
+<h4 id="GraphingCalculator.undo">GraphingCalculator.undo()</h4>
+<p>Return to the previous state in the undo/redo history, if available.</p>
+<h4 id="GraphingCalculator.redo">GraphingCalculator.redo()</h4>
+<p>Advance to the next state in the undo/redo history, if available.</p>
+<h4 id="GraphingCalculator.clearHistory">GraphingCalculator.clearHistory()</h4>
+<p>Clear the undo/redo history. Does not affect the current state.</p>
+<h4 id="GraphingCalculator.screenshot">GraphingCalculator.screenshot([_opts_])</h4>
+<p>Returns an image of the current graphpaper in the form of a PNG <a href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
+<p><em>opts</em> is an optional object with the following properties:</p>
+<ul>
+<li><em>opts.width</em> Width of the screenshot in pixels. Defaults to current width of graphaper.</li>
+<li><em>opts.height</em> Height of the screenshot in pixels. Defaults to current height of graphpaper in pixels.</li>
+<li><em>opts.targetPixelRatio</em> Oversampling factor. Defaults to 1. Larger values are useful for producing images that will look good on high pixel density (&quot;retina&quot;) screens. For example, setting <em>opts.targetPixelRatio</em> to 2 will return an image that is physically twice as wide and twice as tall as the dimensions specified by <em>opts.width</em> and <em>opts.height</em>, but that is designed to look good when displayed scaled down to the dimensions specified by <em>opts.width</em> and <em>opts.height</em>.</li>
+<li><em>opts.preserveAxisNumbers</em> Determines whether to override the default behavior of stripping out the axis numbers from small images. Only relevant if <em>opts.width</em> or <em>opts.height</em> is less than 256px. Defaults to <code>false</code>.</li>
+</ul>
+<p>You can use the returned data URI directly in the src attribute of an image. To save the data as a traditional image file, you can <a href="http://stackoverflow.com/a/11335500/1380913">parse the data and base64 decode it</a>.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Capture a full size screenshot of the graphpaper</span>
+<span class="hljs-keyword">var</span> fullsize = calculator.screenshot();
+
+<span class="hljs-comment">// Capture a double resolution screenshot of the graphpaper designed to</span>
+<span class="hljs-comment">// be displayed at 200px by 200px</span>
+<span class="hljs-keyword">var</span> thumbnail = calculator.screenshot({
+  <span class="hljs-attr">width</span>: <span class="hljs-number">200</span>,
+  <span class="hljs-attr">height</span>: <span class="hljs-number">200</span>,
+  <span class="hljs-attr">targetPixelRatio</span>: <span class="hljs-number">2</span>
+});
+
+<span class="hljs-comment">// Append the thumbnail image to the current page</span>
+<span class="hljs-keyword">var</span> img = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'img'</span>);
+<span class="hljs-comment">// Note: if width and height are not set, the thumbnail</span>
+<span class="hljs-comment">// would display at 400px by 400px since it was captured</span>
+<span class="hljs-comment">// with targetPixelRatio: 2.</span>
+img.width = <span class="hljs-number">200</span>;
+img.height = <span class="hljs-number">200</span>;
+img.src = thumbnail;
+<span class="hljs-built_in">document</span>.body.appendChild(img);</code></pre>
+<p>See <a href="examples/screenshot.html">examples/screenshot.html</a> for a working example.</p>
+<h4 id="GraphingCalculator.asyncScreenshot">GraphingCalculator.asyncScreenshot([_opts_], callback)</h4>
+<p>Similar to <code>GraphingCalculator.screenshot</code>, but asynchronous. Rather than returning a PNG data URI directly,
+<code>callback</code> will be called with the either a URI string or SVG string as its argument.</p>
+<p>There are three main benefits to the asynchronous version:</p>
+<ol>
+<li>a guarantee that the graph state will be fully evaluated at the time the screenshot is captured (useful when setting large or complicated states);</li>
+<li>more flexibility in specifying the region of the graph to be captured (since we can evaluate/plot parts of the graph that are not currently visible before creating the image);</li>
+<li>the ability to output SVG in addition to PNG images.</li>
+</ol>
+<p><em>opts</em> is an optional object. It may contain the same properties passed into <code>Calculator.screenshot()</code>, as well as the following additional properties:</p>
+<ul>
+<li><em>opts.format</em> String that determines the format of the generated image. May be either <code>'png'</code> or <code>'svg'</code>. Defaults to <code>'png'</code>.</li>
+<li><em>opts.mode</em> String that determines the strategy for computing the viewport visible in the screenshot. See the table below for available modes and their descriptions. Defaults to <code>'contain'</code>.</li>
+<li><em>opts.mathBounds</em> An object representing desired viewport bounds with the same properties as those passed into <code>GraphingCalculator.setMathBounds()</code>: <code>top</code>, <code>bottom</code>, <code>left</code>, and <code>right</code>. The current viewport value will be used for any omitted property, but note that you cannot specify <code>top</code> without <code>bottom</code> or <code>left</code> without <code>right</code>.
+Passing invalid bounds will log a warning to the console and use the current viewport bounds in their entirety.</li>
+<li><em>opts.showLabels</em> Boolean that determines whether to include point labels in the captured image. Defaults to <code>false</code>.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>mode</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>contain</td>
+<td>Compute the smallest bounding box for the desired <code>mathBounds</code> and image dimensions that preserves the mathematical aspect ratio (in terms of math units per pixel).</td>
+</tr>
+<tr>
+<td>stretch</td>
+<td>Use the passed in <code>mathBounds</code> exactly, and the current graphpaper bounds for any omitted dimension. Does not preserve the mathematical aspect ratio.</td>
+</tr>
+<tr>
+<td>preserveX</td>
+<td>Set the <code>left</code> and <code>right</code> <code>mathBounds</code> explicitly (or use the current <code>left</code> and <code>right</code> viewport bounds if omitted), and expand or contract the <em>y</em>-axis bounds about the current midline in order to preserve the mathematical aspect ratio. If <code>top</code> and <code>bottom</code> are specified, the midline will be computed from those values.</td>
+</tr>
+<tr>
+<td>preserveY</td>
+<td>Set the <code>top</code> and <code>bottom</code> <code>mathBounds</code> explicitly (or use the current <code>top</code> and <code>bottom</code> viewport bounds if omitted), and expand or contract the <em>x</em>-axis bounds about the current midline in order to preserve the mathematical aspect ratio. If <code>left</code> and <code>right</code> are specified, the midline will be computed from those values.</td>
+</tr>
+</tbody>
+</table>
+<p>Which mode you choose may depend on whether or not the current viewport projection is uniform with respect to both axes (i.e., the mathematical aspect ratio is square). We provide <code>GraphingCalculator.isProjectionUniform()</code> as a convenience method to help with this decision.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Callback</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setImageSrc</span>(<span class="hljs-params">data</span>) </span>{
+  <span class="hljs-keyword">var</span> img = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'my-image'</span>);
+  img.src = data;
+}
+
+<span class="hljs-comment">// Take a screenshot of an exact region without regard for the aspect ratio</span>
+calculator.asyncScreenshot(
+  {
+    <span class="hljs-attr">mode</span>: <span class="hljs-string">'stretch'</span>,
+    <span class="hljs-attr">mathBounds</span>: { <span class="hljs-attr">left</span>: <span class="hljs-number">-5</span>, <span class="hljs-attr">right</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">bottom</span>: <span class="hljs-number">-20</span>, <span class="hljs-attr">top</span>: <span class="hljs-number">0</span> }
+  },
+  setImageSrc
+);
+
+<span class="hljs-comment">// Show -5 to 5 on the x-axis and preserve the aspect ratio</span>
+calculator.asyncScreenshot(
+  {
+    <span class="hljs-attr">mode</span>: <span class="hljs-string">'preserveX'</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">500</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">300</span>,
+    <span class="hljs-attr">mathBounds</span>: { <span class="hljs-attr">left</span>: <span class="hljs-number">-5</span>, <span class="hljs-attr">right</span>: <span class="hljs-number">5</span> }
+  },
+  setImageSrc
+);
+
+<span class="hljs-comment">// Use the smallest bounding box containing the current viewport and preserve the aspect ratio</span>
+calculator.asyncScreenshot(setImageSrc);
+
+<span class="hljs-comment">// Preserve the aspect ratio if the axes are square, otherwise show the exact region</span>
+<span class="hljs-keyword">var</span> opts = {
+  <span class="hljs-attr">mode</span>: calculator.isProjectionUniform() ? <span class="hljs-string">'contain'</span> : <span class="hljs-string">'stretch'</span>,
+  <span class="hljs-attr">width</span>: <span class="hljs-number">500</span>,
+  <span class="hljs-attr">height</span>: <span class="hljs-number">300</span>,
+  <span class="hljs-attr">mathBounds</span>: { <span class="hljs-attr">left</span>: <span class="hljs-number">-5</span>, <span class="hljs-attr">right</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">bottom</span>: <span class="hljs-number">-20</span>, <span class="hljs-attr">top</span>: <span class="hljs-number">0</span> }
+};
+calculator.asyncScreenshot(opts, setImageSrc);</code></pre>
+<p>See <a href="examples/async-screenshot.html">examples/async-screenshot.html</a> for more examples.</p>
+<h4 id="GraphingCalculator-change-event">GraphingCalculator.observeEvent('change', function (eventName, event) {/*...*/})</h4>
+<p>The <code>'change'</code> event is emitted by the calculator whenever any change occurs that will affect the persisted state of the calculator. This applies to any changes caused either by direct user interaction, or by calls to API methods.</p>
+<p>Observing the <code>'change'</code> event allows implementing periodic saving of a user's work without the need for polling.</p>
+<p>The callback provided to <code>observeEvent</code> is called with two parameters: the name of the event (e.g. <code>'change'</code>) and an <code>event</code> object containing a boolean <code>isUserInitiated</code> property.
+The value of <code>event.isUserInitiated</code> is <code>true</code> if the change that triggered the event was caused by a user interacting with the graph, and <code>false</code> otherwise (e.g. if the change
+is due to an API call like <code>calculator.setExpression()</code>).</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">persistState</span>(<span class="hljs-params">state</span>) </span>{
+  <span class="hljs-comment">/* Persist state to your backend */</span>
+}
+
+<span class="hljs-comment">// This example uses the throttle function from underscore.js to limit</span>
+<span class="hljs-comment">// the rate at which the calculator state is queried and persisted.</span>
+throttledSave = _.throttle(
+  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    persistState(calculator.getState());
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Save occurred'</span>);
+  },
+  <span class="hljs-number">1000</span>,
+  { <span class="hljs-attr">leading</span>: <span class="hljs-literal">false</span> }
+);
+
+calculator.observeEvent(<span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">eventName, event</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Change occurred'</span>);
+  <span class="hljs-keyword">if</span> (event.isUserInitiated) {
+    throttledSave();
+  }
+});</code></pre>
+<p>For a working example of observing the change event, see <a href="examples/mirror-state.html">examples/mirror-state.html</a>.</p>
+<h4 id="GraphingCalculator-unobserve-event">GraphingCalculator.unobserveEvent('change')</h4>
+<p>Remove all observers added by <code>GraphingCalculator.observeEvent('change')</code>. For finer control over removing observers, see the section on <a href="#managing-observers">managing observers</a>.</p>
+<h5>Other observable events</h5>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>graphReset</td>
+<td>Fired whenever a user clicks the &quot;Delete All&quot; or &quot;Reset&quot; button in the expressions list top bar.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="document-manipulating-expressions">Manipulating expressions</h2>
+<h4 id="GraphingCalculator.setExpression">GraphingCalculator.setExpression(<i>expression_state</i>)</h4>
+<p>This will update or create a mathematical expression. <em>expression_state</em> should be an object which represents a single expression. Different types of expressions can be specified using the <code>type</code> property of <em>expression_state</em>, which must be either <code>expression</code> or <code>table</code>. If no <code>type</code> property is explicitly specified, the type defaults to <code>expression</code>. Further properties of <em>expression_state</em> for each type are detailed below.</p>
+<p>This function does not return any value.</p>
+<h5>Expressions</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>String <code>'expression'</code>, optional.</td>
+</tr>
+<tr>
+<td>latex</td>
+<td>String, optional, following <a href="#document-expressions">Desmos Expressions</a>.</td>
+</tr>
+<tr>
+<td>color</td>
+<td>String, hex color, optional. See <a href="#document-colors">Colors</a>. Default will cycle through 6 default colors.</td>
+</tr>
+<tr>
+<td>lineStyle</td>
+<td>Enum value, optional. Sets the line drawing style of curves or point lists. See <a href="#document-styles">Styles</a>.</td>
+</tr>
+<tr>
+<td>lineWidth</td>
+<td>Number or String, optional. Determines width of lines in pixels. May be any positive number, or a LaTeX string that evaluates to a positive number. Defaults to 2.5.</td>
+</tr>
+<tr>
+<td>lineOpacity</td>
+<td>Number or String, optional. Determines opacity of lines. May be a number between 0 and 1, or a LaTeX string that evaluates to a number between 0 and 1. Defaults to 0.9.</td>
+</tr>
+<tr>
+<td>pointStyle</td>
+<td>Enum value, optional. Sets the point drawing style of point lists. See <a href="#document-styles">Styles</a>.</td>
+</tr>
+<tr>
+<td>pointSize</td>
+<td>Number or String, optional. Determines diameter of points in pixels. May be any positive number, or a LaTeX string that evaluates to a positive number. Defaults to 9.</td>
+</tr>
+<tr>
+<td>pointOpacity</td>
+<td>Number or String, optional. Determines opacity of points. May be a number between 0 and 1, or a LaTeX string that evaluates to a number between 0 and 1. Defaults to 0.9.</td>
+</tr>
+<tr>
+<td>fillOpacity</td>
+<td>Number or String, optional. Determines opacity of the interior of a polygon or parametric curve. May be a number between 0 and 1, or a LaTeX string that evaluates to a number between 0 and 1. Defaults to 0.4.</td>
+</tr>
+<tr>
+<td>points</td>
+<td>Boolean, optional. Determines whether points are plotted for point lists.</td>
+</tr>
+<tr>
+<td>lines</td>
+<td>Boolean, optional. Determines whether line segments are plotted for point lists.</td>
+</tr>
+<tr>
+<td>fill</td>
+<td>Boolean, optional. Determines whether a polygon or parametric curve has its interior shaded.</td>
+</tr>
+<tr>
+<td>hidden</td>
+<td>Boolean, optional. Determines whether the graph is drawn. Defaults to <code>false</code>.</td>
+</tr>
+<tr>
+<td>secret</td>
+<td>Boolean, optional. Determines whether the expression should appear in the expressions list. Does not affect graph visibility. Defaults to <code>false</code>.</td>
+</tr>
+<tr>
+<td>sliderBounds</td>
+<td><code>{ min: String, max: String, step: String }</code>, optional. Sets bounds of slider expressions. If <code>step</code> is omitted, <code>''</code>, or <code>undefined</code>, the slider will be continuously adjustable. See note below.</td>
+</tr>
+<tr>
+<td>playing</td>
+<td>Boolean, optional. Determines whether the expression should animate, if it is a slider. Defaults to <code>false</code>.</td>
+</tr>
+<tr>
+<td>parametricDomain</td>
+<td><code>{ min: String, max: String }</code>, optional. Sets bounds of parametric curves. See note below.</td>
+</tr>
+<tr>
+<td>polarDomain</td>
+<td><code>{ min: String, max: String }</code>, optional. Sets bounds of polar curves. See note below.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>String, optional. Should be a valid property name for a javascript object (letters, numbers, and <code>_</code>).</td>
+</tr>
+<tr>
+<td>dragMode</td>
+<td>Enum value, optional. Sets the drag mode of a point. See <a href="#document-drag-modes">Drag Modes</a>. Defaults to <code>DragModes.AUTO</code>.</td>
+</tr>
+<tr>
+<td>label</td>
+<td>String, optional. Sets the text label of a point. If a label is set to the empty string then the point's default label (its coordinates) will be applied.</td>
+</tr>
+<tr>
+<td>showLabel</td>
+<td>Boolean, optional. Sets the visibility of a point's text label.</td>
+</tr>
+<tr>
+<td>labelSize</td>
+<td>String, optional. Specifies the text size of a point's label as a LaTeX string, which, when computed, multiplies the standard label font size of 110% of the system font size. Defaults to '1'.</td>
+</tr>
+<tr>
+<td>labelOrientation</td>
+<td>Enum value, optional. Sets the desired position of a point's text label. See <a href="#document-label-orientations">LabelOrientations</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Note: Bounds for the <code>parametricDomain</code>, <code>polarDomain</code>, and <code>sliderBounds</code> properties should be valid LaTeX strings; numbers will be coerced into strings before being set. Bounds can be any LaTeX expression in terms of numbers and predefined constants (<code>e</code>, <code>\pi</code>, <code>\tau</code>), but not variables.</p>
+<h5>Tables</h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>String <code>'table'</code>, required.</td>
+</tr>
+<tr>
+<td>columns</td>
+<td>Array of <a href="#document-table-columns">Table Columns</a>, required.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>String, optional. Should be a valid property name for a javascript object (letters, numbers, and <code>_</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>If <code>setExpression</code> is called with an id that already exists, values for provided parameters will be updated in the expression, and unprovided parameters will remain unchanged (they will NOT be reset to default values).</p>
+<p>Note: <code>setExpression</code> cannot be used to change the type of an existing expression. In that case, first use <code>removeExpression</code> to remove the existing expression.</p>
+<p>If the expression results in an error, it will still be added to the expressions list, but nothing will be graphed.</p>
+<p>If the provided parameters are invalid (e.g. type is set to something other than <code>'expression'</code> or <code>'table'</code>), this function will have no effect.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">//Define a variable m.  Doesn't graph anything.</span>
+calculator.setExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'m'</span>, <span class="hljs-attr">latex</span>: <span class="hljs-string">'m=2'</span> });
+
+<span class="hljs-comment">//Draw a red line with slope of m through the origin.</span>
+<span class="hljs-comment">//Because m = 2, this line will be of slope 2.</span>
+calculator.setExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'line1'</span>, <span class="hljs-attr">latex</span>: <span class="hljs-string">'y=mx'</span>, <span class="hljs-attr">color</span>: <span class="hljs-string">'#ff0000'</span> });
+
+<span class="hljs-comment">//Updating the value of m will change the slope of the line to 3</span>
+grapher.setExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'m'</span>, <span class="hljs-attr">latex</span>: <span class="hljs-string">'m=3'</span> });
+
+<span class="hljs-comment">//Inequality to shade a circle at the origin</span>
+calculator.setExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'circle1'</span>, <span class="hljs-attr">latex</span>: <span class="hljs-string">'x^2 + y^2 &lt; 1'</span> });
+
+<span class="hljs-comment">//Restrict the slider for the m variable to the integers from 1 to 10</span>
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'m'</span>,
+  <span class="hljs-attr">sliderBounds</span>: { <span class="hljs-attr">min</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">max</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">step</span>: <span class="hljs-number">1</span> }
+});</code></pre>
+<pre><code class="language-javascript"><span class="hljs-comment">//Table with three columns. Note that the first two columns have explicitly</span>
+<span class="hljs-comment">//specified values, and the third column is computed from the first.</span>
+calculator.setExpression({
+  <span class="hljs-attr">type</span>: <span class="hljs-string">'table'</span>,
+  <span class="hljs-attr">columns</span>: [
+    {
+      <span class="hljs-attr">latex</span>: <span class="hljs-string">'x'</span>,
+      <span class="hljs-attr">values</span>: [<span class="hljs-string">'1'</span>, <span class="hljs-string">'2'</span>, <span class="hljs-string">'3'</span>, <span class="hljs-string">'4'</span>, <span class="hljs-string">'5'</span>]
+    },
+    {
+      <span class="hljs-attr">latex</span>: <span class="hljs-string">'y'</span>,
+      <span class="hljs-attr">values</span>: [<span class="hljs-string">'1'</span>, <span class="hljs-string">'4'</span>, <span class="hljs-string">'9'</span>, <span class="hljs-string">'16'</span>, <span class="hljs-string">'25'</span>],
+      <span class="hljs-attr">dragMode</span>: Desmos.DragModes.XY
+    },
+    {
+      <span class="hljs-attr">latex</span>: <span class="hljs-string">'x^2'</span>,
+      <span class="hljs-attr">color</span>: Desmos.Colors.BLUE,
+      <span class="hljs-attr">columnMode</span>: Desmos.ColumnModes.LINES
+    }
+  ]
+});</code></pre>
+<p>See this example live at <a href="examples/column-properties.html">examples/column-properties.html</a>.</p>
+<p>Additional Example:</p>
+<ul>
+<li>Update slider values based on the mouse position: <a href="examples/mousemove.html">examples/mousemove.html</a></li>
+</ul>
+<h4>GraphingCalculator.setExpressions(<em>expression_states</em>)</h4>
+<p><em>expression_states</em> should be an array, and each element should be a valid argument for <a href="#GraphingCalculator.setExpression" title="GraphingCalculator.setExpression"><span class="pre">GraphingCalculator.setExpression()</span></a></p>
+<p>This function will attempt to create expressions for each element in the array, and is equivalent to</p>
+<pre><code class="language-javascript">expression_states.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">expression_state</span>) </span>{
+  calculator.setExpression(expression_state);
+});</code></pre>
+<p>This function does not return any value.</p>
+<h4>GraphingCalculator.removeExpression(<em>expression_state</em>)</h4>
+<p>Remove an expression from the expressions list. <em>expression_state</em> is an object with an <em>id</em> property.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Add an expression</span>
+calculator.setExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'parabola'</span>, <span class="hljs-attr">latex</span>: <span class="hljs-string">'y=x^2'</span> });
+
+<span class="hljs-comment">// Remove it</span>
+calculator.removeExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'parabola'</span> });</code></pre>
+<h4>GraphingCalculator.removeExpressions(<em>expression_states</em>)</h4>
+<p>Remove several expressions from the expressions list. <em>expression_states</em> is an array of objects with <em>id</em> properties. This function is equivalent to</p>
+<pre><code class="language-javascript">expression_states.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">expression_state</span>) </span>{
+  calculator.removeExpression(expression_state);
+});</code></pre>
+<h4>GraphingCalculator.getExpressions()</h4>
+<p>Returns a representation of the current expressions list as an array. Each array member
+is an expression state (i.e. an object suitable for passing into <code>setExpression</code>).</p>
+<pre><code class="language-javascript">calculator.getExpressions();
+<span class="hljs-comment">/*
+[
+  {
+    id: "1",
+    type: "expression",
+    latex: "\left(1,2\right)",
+    pointStyle: "POINT",
+    hidden: false,
+    secret: false,
+    color: "#c74440",
+    parametricDomain: {min: "0", max: "1"},
+    dragMode: "X",
+    label: "my point",
+    showLabel: true
+  },
+  ...
+]
+*/</span></code></pre>
+<h4>GraphingCalculator.expressionAnalysis</h4>
+<p>An observable object containing information about the calculator's analysis of each expression. Its keys are expression ids, and its values are objects with the following properties:</p>
+<pre><code class="language-javascript">{
+  <span class="hljs-attr">isGraphable</span>: <span class="hljs-built_in">Boolean</span>, <span class="hljs-comment">// Does the expression represent something that can be plotted?</span>
+  isError: <span class="hljs-built_in">Boolean</span>, <span class="hljs-comment">// Does the expression result in an evaluation error?</span>
+  errorMessage?: <span class="hljs-built_in">String</span> <span class="hljs-comment">// The (localized) error message, if any</span>
+  evaluationDisplayed?: <span class="hljs-built_in">Boolean</span>, <span class="hljs-comment">// Is evaluation information displayed in the expressions list?</span>
+  evaluation?: { <span class="hljs-attr">type</span>: <span class="hljs-string">'Number'</span>, <span class="hljs-attr">value</span>: <span class="hljs-built_in">Number</span> } |
+               { <span class="hljs-attr">type</span>: <span class="hljs-string">'ListOfNumber'</span>, <span class="hljs-attr">value</span>: <span class="hljs-built_in">Number</span>[] } <span class="hljs-comment">// numeric value(s)</span>
+}</code></pre>
+<p>Note that the calculator evaluates expressions asynchronously, so attempts to access <code>expressionAnalysis</code> in synchronous code may not accurately reflect the most current evaluation state. Instead, the <code>expressionAnalysis</code> object should be <code>observe</code>d and referenced inside of a callback.</p>
+<pre><code class="language-javascript">calculator.observe(<span class="hljs-string">'expressionAnalysis'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> id <span class="hljs-keyword">in</span> calculator.expressionAnalysis) {
+    <span class="hljs-keyword">var</span> analysis = calculator.expressionAnalysis[id];
+    <span class="hljs-keyword">if</span> (analysis.isGraphable) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'This expression can be plotted.'</span>);
+    <span class="hljs-keyword">if</span> (analysis.isError)
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Expression '<span class="hljs-subst">${id}</span>': <span class="hljs-subst">${analysis.errorMessage}</span>`</span>);
+    <span class="hljs-keyword">if</span> (analysis.evaluation) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`value: <span class="hljs-subst">${analysis.evaluation.value}</span>`</span>);
+  }
+});</code></pre>
+<h2 id="document-expressions">Desmos Expressions</h2>
+<p><em>Expressions</em> are the central mathematical objects used in Desmos. They can plot curves, draw points, define variables, even define multi-argument functions. Desmos uses LaTeX for passing expressions back and forth.</p>
+<p>The following sections give some examples of supported functionality but are not exhaustive.</p>
+<p>We recommend using the interactive calculator at <a href="https://www.desmos.com/calculator/">www.desmos.com/calculator</a> to explore the full range of supported expressions.</p>
+<h3>Types of expressions</h3>
+<p>When analyzed, expressions can cause one or more of the following effects:</p>
+<h4>Evaluation</h4>
+<p>If the expression can be evaluated to a number, it will be evaluated</p>
+<h4>Plotting curves</h4>
+<p>If the expression expresses one variable as a function of another, it will be plotted.</p>
+<h4>Plotting points</h4>
+<p>If the expression defines one or more points, they will be plotted directly.</p>
+<h4>Plotting Inequalities</h4>
+<p>If an expression represents an inequality of x and y which can be solved, the entire region
+represented by the inequality will be shaded in.</p>
+<h4>Exporting definitions</h4>
+<p>Expression can export either variable or function definitions, which can be used elsewhere.
+Definitions are not order-dependent. Built in symbols cannot be redefined. If a symbol is
+defined multiple times, referencing it elsewhere will be an error.</p>
+<h4>Solving</h4>
+<p>If an expression of x and y can be solved (specifically, if it is quadratic in either x or y),
+the solution set will be plotted, but no definitions will be exported.</p>
+<h4>Errors</h4>
+<p>If the input cannot be interpreted, the expression will be marked as an error.</p>
+<p>Here are a few examples:</p>
+<table>
+<thead>
+<tr>
+<th>input</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="mathquill-embedded-latex">1+1</span></td>
+<td>Evaluable.</td>
+</tr>
+<tr>
+<td><span class="mathquill-embedded-latex">\sin(x)</span></td>
+<td>Plots y as a function of x.</td>
+</tr>
+<tr>
+<td><span class="mathquill-embedded-latex">m=1</span></td>
+<td>Defines m as a variable that can be referenced by other expressions.</td>
+</tr>
+<tr>
+<td><span class="mathquill-embedded-latex">a=2+x</span></td>
+<td>Plots a as a function of x, and defines a as a variable that can be referenced by other expressions.</td>
+</tr>
+<tr>
+<td><span class="mathquill-embedded-latex">x+y=3</span></td>
+<td>Plots an implicit curve of x and y.</td>
+</tr>
+</tbody>
+</table>
+<h3>Supported characters</h3>
+<p>Following the LaTeX standard, any multi-character symbol must be preceded by a
+leading backslash, otherwise it will be interpreted as a series of single-letter
+variables. That the backslash <em>also</em> functions as an escape character inside of
+JavaScript strings is a common source of confusion. You should take special care
+to ensure that a <em>literal</em> backslash character ends up in the final string,
+which can be accomplished in one of two ways:</p>
+<ol>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#Escape_notation">Escape</a> every backslash: <code>'\\sin(\\pi)'</code></li>
+<li>Use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw">template literals</a>: <code>String.raw`\sin(\pi)`</code> (<a href="https://caniuse.com/#feat=template-literals">not supported in IE</a>)</li>
+</ol>
+<p>The following functions are defined as built-ins:</p>
+<h4>Arithmetic operators</h4>
+<p><strong>+, -, *, /, ^</strong></p>
+<p>These operators follow standard precedence rules, and can operate on any kind of expression. As specified by LaTeX, exponentiation with a power that is more than one character (e.g. <span class="mathquill-embedded-latex">e^{2x}</span>) require curly braces around the exponent.</p>
+<p>Division is always represented in fraction notation. Curly braces can be used to specify the limits of the numerator and the denominator where they don't follow standard precedence rules.</p>
+<h4>Mathematical constants</h4>
+<p><strong>e, pi</strong></p>
+<p><span class="mathquill-embedded-latex">\pi</span> is written as <code>\pi</code></p>
+<h4>Trig functions (forward and inverse)</h4>
+<p><strong>sin, cos, tan, cot, sec, csc, arcsin, arccos, arctan, arccot, arcsec, arccsc</strong></p>
+<p>These functions all take a single input, and operate in radians by default.</p>
+<p>These functions support both formal function notation: <span class="mathquill-embedded-latex">\sin(x)</span>, and shorthand notation: <span class="mathquill-embedded-latex">\sin \space x</span>. Shorthand notation is limited to cases where the provided argument is simple and unambiguous, so function notation is recommended for any computer-generated expressions.</p>
+<p>These functions also support inverse and squared function notation, via <span class="mathquill-embedded-latex">\sin^{-1}(x)</span> and <span class="mathquill-embedded-latex">\sin^2(x)</span>. This notation is not generally supported on most functions, but is provided for use with trig identities. For general use, disambiguating with parentheses is recommended.</p>
+<h4>Logarithms</h4>
+<p><strong>ln, log</strong></p>
+<p>These functions both take a single input, and operate with bases of e, and 10, respectively. These work in both function and shorthand notation, like the trig functions.</p>
+<p>Logs of arbitrary bases can be specified using using subscripts: <code>\log_a(b)</code> is interpreted as <span class="mathquill-embedded-latex">\log_a(b)</span></p>
+<h4>Square root</h4>
+<p><span class="mathquill-embedded-latex">\sqrt{x}</span> is written as <code>\sqrt{x}</code></p>
+<h3 id="document-helper-expressions">Helper Expressions</h3>
+<p>In addition to normal expressions that show up in the calculator's expressions list, you can create &quot;helper expressions&quot; that are evaluated like normal expressions, but don't show up in the expressions list. Helper expressions are useful for monitoring and reacting to what a user is doing with an embedded calculator. Every <code>calculator</code> object has a <code>HelperExpression</code> constructor for adding helper expressions to that <code>calculator</code>.</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">var</span> calculator = Desmos.GraphingCalculator(elt);
+
+calculator.setExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'a-slider'</span>, <span class="hljs-attr">latex</span>: <span class="hljs-string">'a=1'</span> });
+<span class="hljs-keyword">var</span> a = calculator.HelperExpression({ <span class="hljs-attr">latex</span>: <span class="hljs-string">'a'</span> });
+
+calculator.setExpression({ <span class="hljs-attr">id</span>: <span class="hljs-string">'list'</span>, <span class="hljs-attr">latex</span>: <span class="hljs-string">'L=[1, 2, 3]'</span> });
+<span class="hljs-keyword">var</span> L = calculator.HelperExpression({ <span class="hljs-attr">latex</span>: <span class="hljs-string">'L'</span> });</code></pre>
+<p>Helper expressions have two observable properties: <code>numericValue</code> for expressions that evaluate to a number, and <code>listValue</code> for expressions that evaluate to a list. They are updated whenever the expression changes.</p>
+<h4 id="HelperExpression.numericValue">HelperExpression.numericValue</h4>
+<pre><code class="language-javascript">a.observe(<span class="hljs-string">'numericValue'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(a.numericValue);
+});
+
+L.observe(<span class="hljs-string">'listValue'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(L.listValue);
+});</code></pre>
+<p>See <a href="examples/helper.html">examples/helper.html</a> for an example of monitoring the value of a slider and using it to update the surrounding page.</p>
+<p>See <a href="examples/dynamic-labels.html">examples/dynamic-labels.html</a> for an example of observing a slider value to create a dynamic point label.</p>
+<h3 id="document-table-columns">Table Columns</h3>
+<p>Tables are specified by an array of their columns. The values in each column are either explicitly specified when the column header is a unique variable, or computed if the column header is an expression. The properties of table columns are given below:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>latex</td>
+<td>String, required. Variable or computed expression used in the column header.</td>
+</tr>
+<tr>
+<td>values</td>
+<td>Array of LaTeX strings, optional. Need not be specified in the case of computed table columns.</td>
+</tr>
+<tr>
+<td>color</td>
+<td>String hex color, optional. See <a href="#document-colors">Colors</a>. Default will cycle through 6 default colors.</td>
+</tr>
+<tr>
+<td>hidden</td>
+<td>Boolean, optional. Determines if graph is drawn. Defaults to false.</td>
+</tr>
+<tr>
+<td>points</td>
+<td>Boolean, optional. Determines whether points are plotted.</td>
+</tr>
+<tr>
+<td>lines</td>
+<td>Boolean, optional. Determines whether line segments are plotted.</td>
+</tr>
+<tr>
+<td>lineStyle</td>
+<td>Enum value, optional. Sets the drawing style for line segments. See <a href="#document-styles">Styles</a>.</td>
+</tr>
+<tr>
+<td>lineWidth</td>
+<td>Number or String, optional. Determines width of lines in pixels. May be any positive number, or a LaTeX string that evaluates to a positive number. Defaults to 2.5.</td>
+</tr>
+<tr>
+<td>lineOpacity</td>
+<td>Number or String, optional. Determines opacity of lines. May be a number between 0 and 1, or a LaTeX string that evaluates to a number between 0 and 1. Defaults to 0.9.</td>
+</tr>
+<tr>
+<td>pointStyle</td>
+<td>Enum value, optional. Sets the drawing style for points. See <a href="#document-styles">Styles</a>.</td>
+</tr>
+<tr>
+<td>pointSize</td>
+<td>Number or String, optional. Determines diameter of points in pixels. May be any positive number, or a LaTeX string that evaluates to a positive number. Defaults to 9.</td>
+</tr>
+<tr>
+<td>pointOpacity</td>
+<td>Number or String, optional. Determines opacity of points. May be a number between 0 and 1, or a LaTeX string that evaluates to a number between 0 and 1. Defaults to 0.9.</td>
+</tr>
+<tr>
+<td>columnMode [DEPRECATED]</td>
+<td>Enum value, optional. See <a href="#document-column-modes">Column Modes</a>. Defaults to <code>Desmos.ColumnModes.POINT</code>.</td>
+</tr>
+<tr>
+<td>dragMode</td>
+<td>Enum value, optional. See <a href="#document-drag-modes">Drag Modes</a>. Defaults to <code>DragModes.NONE</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Note that display properties such as <code>color</code>, and <code>hidden</code> are ignored for the first column because the first column is never plotted as a dependent variable.</p>
+<h4 id="document-column-modes">Column Modes [DEPRECATED]</h4>
+<p>The <code>columnMode</code> of a table column determines whether points in the table column are drawn as points, lines, or both, specified as one of</p>
+<ul>
+<li><code>Desmos.ColumnModes.POINTS</code></li>
+<li><code>Desmos.ColumnModes.LINES</code></li>
+<li><code>Desmos.ColumnModes.POINTS_AND_LINES</code>.</li>
+</ul>
+<p>Note that as of API v1.1 the <code>columnMode</code> property for table columns has been split into boolean <code>points</code> and <code>lines</code>
+properties that control whether points and line segments are plotted, respectively.</p>
+<h4 id="document-drag-modes">Drag Modes</h4>
+<p>The <code>dragMode</code> of a point determines whether it can be changed by dragging in the <em>x</em> direction, the <em>y</em> direction, both, or neither, specified as</p>
+<ul>
+<li><code>Desmos.DragModes.X</code></li>
+<li><code>Desmos.DragModes.Y</code></li>
+<li><code>Desmos.DragModes.XY</code></li>
+<li><code>Desmos.DragModes.NONE</code></li>
+</ul>
+<p>In addition, a point may have its <code>dragMode</code> set to <code>Desmos.DragModes.AUTO</code>, in which case the normal calculator rules for determining point behavior will be applied. For example, a point whose coordinates are both slider variables would be draggable in both the <em>x</em> and <em>y</em> directions.</p>
+<p>The <code>dragMode</code> of a table column determines the behavior of the points represented by the column. The <code>dragMode</code> is only applicable to explicitly specified column values, and has no effect on computed column values.</p>
+<h4 id="document-axis-arrow-modes">Axis Arrow Modes</h4>
+<p>The <code>AxisArrowMode</code> specifies whether arrows should be drawn at one or both ends of the x or y axes. It is specified separately for the x and y axes through the <code>xAxisArrowMode</code> and <code>yAxisArrowMode</code> graph settings. Must be one of</p>
+<ul>
+<li><code>Desmos.AxisArrowModes.NONE</code></li>
+<li><code>Desmos.AxisArrowModes.POSITIVE</code></li>
+<li><code>Desmos.AxisArrowModes.BOTH</code></li>
+</ul>
+<p>The default value for both axes is <code>Desmos.AxisArrowMode.NONE</code>.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Set the x axis to have arrows on both ends</span>
+calculator.updateSettings({ <span class="hljs-attr">xAxisArrowMode</span>: Desmos.AxisArrowModes.BOTH });</code></pre>
+<h4 id="document-label-orientations">Label Orientations</h4>
+<p>The <code>labelOrientation</code> property specifies the desired position of a point's label, relative to the point itself.
+This will override the calculator's default behavior of trying to position labels in such a way as to maintain legibility.
+To restore this behavior, set the value back to <code>Desmos.LabelOrientations.DEFAULT</code>.</p>
+<ul>
+<li><code>Desmos.LabelOrientations.ABOVE</code></li>
+<li><code>Desmos.LabelOrientations.BELOW</code></li>
+<li><code>Desmos.LabelOrientations.LEFT</code></li>
+<li><code>Desmos.LabelOrientations.RIGHT</code></li>
+<li><code>Desmos.LabelOrientations.DEFAULT</code></li>
+</ul>
+<p>The default value is <code>Desmos.LabelOrientations.DEFAULT</code>.</p>
+<h3 id="document-author-features">Author Features</h3>
+<p>Secret folders allow creating graphed expressions and defining functions and variables with definitions that can be hidden from other users.</p>
+<p>Readonly expressions can't be edited or deleted by a student. Display properties and, where relevant, direct manipulation (e.g. sliders or movable points) remain enabled and editable.</p>
+<p>To allow a user to create and see the contents of secret folders or set or edit readonly expressions, use the <code>{authorFeatures: true}</code> option in the <a href="#document-calculator-constructor">calculator constructor</a>.</p>
+<p>In <code>authorFeatures: true</code> mode, whenever a folder is created, it can optionally be made secret by checking the &quot;hide this folder from students&quot; option. The contents of these folders will be hidden when loaded into a calculator in <code>administerSecretFolders: false</code> mode (the default). Any expression, note, image, folder, or table can be marked readonly from Edit List Mode.</p>
+<p>This workflow is useful for creating activities where students are asked to describe properties of a graphed function without seeing its definition, or to ensure that critical expressions can't be deleted or modified.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// In calc1, users will be allowed to create secret folders and see</span>
+<span class="hljs-comment">// their contents.</span>
+<span class="hljs-keyword">var</span> calc1 = Desmos.GraphingCalculator(elt1, { <span class="hljs-attr">authorFeatures</span>: <span class="hljs-literal">true</span> });
+
+<span class="hljs-comment">// By default, secret folders are hidden from users.</span>
+<span class="hljs-keyword">var</span> calc2 = Desmos.GraphingCalculator(elt2);</code></pre>
+<p>For a working example of Secret Folders, see <a href="examples/secret-folders.html">examples/secret-folders.html</a>.</p>
+<p>For a working example of Readonly Expressions, see <a href="examples/readonly-expressions.html">examples/readonly-expressions.html</a></p>
+<h2 id="document-update-settings">Updating and Observing Settings</h2>
+<h4>GraphingCalculator.updateSettings(<em>settings</em>)</h4>
+<h4>GraphingCalculator.setGraphSettings(<em>settings</em>) [DEPRECATED]</h4>
+<p>Updates any of the properties allowed in the constructor. Only properties that are present will be changed--other settings will retain their previous value. Note that <em>updateSettings</em> is preferred to <em>setGraphSettings</em>, which is deprecated.</p>
+<p>Also note that certain combinations of options are mutually exclusive. If an update would
+produce incompatible options, additional options may be ignored or adjusted to
+obtain a compatible set. To prevent the calculator from making those adjustments
+on your behalf, you should avoid passing in the following combinations:</p>
+<ul>
+<li><code>graphpaper: false</code> with <code>expressionsCollapsed: true</code> or <code>zoomButtons: true</code></li>
+<li><code>lockViewport: true</code> with <code>zoomButtons: true</code></li>
+</ul>
+<h4>GraphingCalculator.settings</h4>
+<h4>GraphingCalculator.graphSettings [DEPRECATED]</h4>
+<p>Object with observable properties for each public property.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Set xAxisLabel</span>
+calculator.updateSettings({ <span class="hljs-attr">xAxisLabel</span>: <span class="hljs-string">'Time'</span> });
+
+<span class="hljs-comment">// Observe the value of `xAxisLabel`, and log a message when it changes.</span>
+calculator.settings.observe(<span class="hljs-string">'xAxisLabel'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(calculator.settings.xAxisLabel);
+});</code></pre>
+<p>See <a href="examples/graphsettings.html">examples/graphsettings.html</a> for a working example of setting and observing graph settings.</p>
+<h2 id="document-randomness">Random Seeds</h2>
+<p>The graphing calculator has a built-in <code>random()</code> function that returns random
+samples from lists and statistical distributions. Behind every call to
+<code>random()</code> is a pseudorandom number generator (PRNG) that takes a seed. While
+the seed ultimately consumed by the PRNG comprises several components, the
+<code>settings</code> object exposes a property called <code>randomSeed</code> that can be observed or
+set.</p>
+<p>By default, <code>randomSeed</code> is a 128-bit string that is created at instantiation
+time and updated whenever the graph is cleared or the user pressees a
+&quot;randomize&quot; icon at the top of the expressions list. Since <code>randomSeed</code> serves
+as a common prefix for <em>every</em> seed passed to the PRNG, updating its value will
+simultaneously re-randomize every expression in the list that uses the
+<code>random()</code> function.</p>
+<p>The <code>randomSeed</code> property is included in the serialized state returned from
+<code>.getState()</code>, and loading a state via <code>.setState()</code> will preserve the
+existing seed. Since there may be situations in which you want to control
+<code>randomSeed</code>s value, or the timing of its updates, the API offers the ability to
+do both.</p>
+<p>It is possible to explicitly set <code>randomSeed</code> to a string of your choosing,
+either as a constructor option or via the <code>.updateSettings()</code> method, as for any
+other setting:</p>
+<p>Example:</p>
+<pre><code class="language-javascript">calculator.updateSettings({ <span class="hljs-attr">randomSeed</span>: <span class="hljs-string">'my-random-seed'</span> });</code></pre>
+<p>If you simply want to generate a <em>new</em> <code>randomSeed</code> programmatically (to initiate
+a global re-randomization of the expressions list), but don't care about its
+specific value, the API includes a convenience method for that purpose:</p>
+<h4 id="GraphingCalculator.newRandomSeed">GraphingCalculator.newRandomSeed()</h4>
+<p>Update the <code>settings.randomSeed</code> property to a new random value.</p>
+<h2 id="document-layout">Layout</h2>
+<p>By default, the calculator will fill its container element (with one notable exception: see <code>GraphingCalculator.resize()</code> immediately below). That means sizing the calculator appropriately for your layout is equivalent to sizing its containing <code>&lt;div&gt;</code>, just like any other element on the page, with two additional considerations:</p>
+<p>The calculator will automatically display in one of two layouts depending on its container element's width: above <code>450px</code> the expressions list will be placed <em>to the left</em> of the graph paper; below <code>450px</code> the expressions list will be placed <em>below</em> the graph paper.</p>
+<p>In order for the calculator to adjust its layout appropriately on mobile devices, a viewport <code>&lt;meta&gt;</code> tag is necessary to control the viewport size and scale. Include the following in the <code>&lt;head&gt;</code> of your page:</p>
+<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1"</span> /&gt;</span></code></pre>
+<p>For more information, see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag">this MDN article</a>.</p>
+<h4>GraphingCalculator.resize()</h4>
+<p>Resize the calculator to fill its container. This will happen automatically unless the <code>autosize</code> <a href="#document-calculator">constructor option</a> is set to <code>false</code>. In that case, this method must be called whenever the dimensions of the calculator's container element change, and whenever the container element is added to or removed from the DOM.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">var</span> elt = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'calculator'</span>);
+<span class="hljs-keyword">var</span> calculator = Desmos.GraphingCalculator(elt, { <span class="hljs-attr">autosize</span>: <span class="hljs-literal">false</span> });
+
+<span class="hljs-comment">// Resize the calculator explicitly.</span>
+elt.style.width = <span class="hljs-string">'600px'</span>;
+elt.style.height = <span class="hljs-string">'400px'</span>;
+calculator.resize();</code></pre>
+<p>See <a href="examples/fullscreen.html">examples/fullscreen.html</a> for an example of how to keep the calculator resized to fill the full screen using absolute positioning.</p>
+<p>This function does not return any value.</p>
+<h2 id="document-coordinates">Coordinates</h2>
+<h4>GraphingCalculator.setMathBounds(<em>bounds</em>)</h4>
+<p>Updates the math coordinates of the graphpaper bounds. <em>bounds</em> must be an object with <code>left</code>, <code>right</code>, <code>bottom</code>, and <code>top</code> properties.</p>
+<p>If invalid bounds are provided (<code>bounds.right &lt;= bounds.left</code>, <code>bounds.top &lt;= bounds.bottom</code>), the graphpaper bounds will not be changed.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">//Only show the first quadrant</span>
+calculator.setMathBounds({
+  <span class="hljs-attr">left</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">right</span>: <span class="hljs-number">10</span>,
+  <span class="hljs-attr">bottom</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">top</span>: <span class="hljs-number">10</span>
+});</code></pre>
+<p>This function does not return any value.</p>
+<h4 id="GraphingCalculator.graphpaperBounds">GraphingCalculator.graphpaperBounds</h4>
+<p>The <code>graphpaperBounds</code> observable property gives the bounds of the graphpaper in both math coordinates and pixel coordinates. It is an object with the following structure:</p>
+<pre><code class="language-javascript">{
+  <span class="hljs-attr">mathCoordinates</span>: {
+    <span class="hljs-attr">top</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">bottom</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">left</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">right</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-built_in">Number</span>
+  },
+  <span class="hljs-attr">pixelCoordinates</span>: {
+    <span class="hljs-attr">top</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">bottom</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">left</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">right</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-built_in">Number</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-built_in">Number</span>
+  }
+}</code></pre>
+<p><code>pixelCoordinates</code> are referenced to the top left of the calculator's parent DOM element---that is, the element that is passed into the <code>GraphingCalculator</code> constructor. Note that <code>pixelCoordinates.top &lt; pixelCoordinates.bottom</code>, but <code>mathCoordinates.top &gt; mathCoordinates.bottom</code>.</p>
+<p>Observing the <code>graphpaperBounds</code> property allows being notified whenever the graphpaper is panned or zoomed.</p>
+<p>Example:</p>
+<pre><code class="language-javascript">calculator.observe(<span class="hljs-string">'graphpaperBounds'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> pixelCoordinates = calculator.graphpaperBounds.pixelCoordinates;
+  <span class="hljs-keyword">var</span> mathCoordinates = calculator.graphpaperBounds.mathCoordinates;
+
+  <span class="hljs-keyword">var</span> pixelsPerUnitY = pixelCoordinates.height / mathCoordinates.height;
+  <span class="hljs-keyword">var</span> pixelsPerUnitX = pixelCoordinates.width / mathCoordinates.width;
+
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Current aspect ratio: '</span> + pixelsPerUnitY / pixelsPerUnitX);
+});</code></pre>
+<h4 id="GraphingCalculator.mathToPixels">GraphingCalculator.mathToPixels(coords)</h4>
+<p>Convert math coordinates to pixel coordinates. <code>coords</code> is an object with an <code>x</code> property, a <code>y</code> property, or both. Returns an object with the same properties as <code>coords</code>.</p>
+<h4 id="GraphingCalculator.pixelsToMath">GraphingCalculator.pixelsToMath(coords)</h4>
+<p>Convert pixel coordinates to math coordinates. Inverse of <code>mathToPixels</code>.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Find the pixel coordinates of the graphpaper origin:</span>
+calculator.mathToPixels({ <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> });
+
+<span class="hljs-comment">// Find the math coordinates of the mouse</span>
+<span class="hljs-keyword">var</span> calculatorRect = calculatorElt.getBoundingClientRect();
+<span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'mousemove'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">evt</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(
+    calculator.pixelsToMath({
+      <span class="hljs-attr">x</span>: evt.clientX - calculatorRect.left,
+      <span class="hljs-attr">y</span>: evt.clientY - calculatorRect.top
+    })
+  );
+});</code></pre>
+<p>Additional Examples:</p>
+<ul>
+<li>Observe <code>calculator.graphpaperBounds</code> to keep external labels synced with the graphpaper: <a href="examples/graphpaper-bounds.html">examples/graphpaper-bounds.html</a></li>
+<li>Translate clicks to math coordinates to add points to a table: <a href="examples/click-table.html">examples/click-table.html</a></li>
+</ul>
+<h2 id="managing-observers">Managing Observers</h2>
+<p>The calculator exposes several objects with observable properties that may be accessed via an <code>observe</code> method. The first argument to <code>observe</code> is a property string, and the second is a callback to be fired when the property changes. The attached callback represents an <em>observer</em> for that property. Multiple observers can be added to a single property.</p>
+<p>In general, calling <code>.unobserve(property)</code> removes <em>all</em> of the observers created with <code>.observe(property)</code>. It is also possible to use namespaced property strings when creating observers so that they can be removed individually.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Add three different observers to the 'xAxisLabel' property</span>
+calculator.settings.observe(<span class="hljs-string">'xAxisLabel.foo'</span>, callback1);
+calculator.settings.observe(<span class="hljs-string">'xAxisLabel.bar'</span>, callback2);
+calculator.settings.observe(<span class="hljs-string">'xAxisLabel.baz'</span>, callback3);
+
+<span class="hljs-comment">// Stop firing `callback2` when the x-axis label changes</span>
+calculator.settings.unobserve(<span class="hljs-string">'xAxisLabel.bar'</span>);
+
+<span class="hljs-comment">// Remove the two remaining observers</span>
+calculator.settings.unobserve(<span class="hljs-string">'xAxisLabel'</span>);</code></pre>
+<p>See <a href="examples/managing-observers.html">examples/managing-observers.html</a> for a live example.</p>
+<p><a href="#GraphingCalculator-change-event">GraphingCalculator.observeEvent and GraphingCalculator.unobserveEvent</a> behave in the same way as <code>observe</code> and <code>unobserve</code>, respectively. The only difference is that, while <code>observe</code> is always associated with a property of an object that is being updated, <code>observeEvent</code> is used to listen for global calculator events (currently just <code>'change'</code>). Calculator events can be namespaced in the same way that properties can. For instance, binding a callback to <code>'change.foo'</code> would make it possible to remove a single observer with <code>GraphingCalculator.unobserveEvent('change.foo')</code>.</p>
+<h2 id="document-selection">Selection and Focus</h2>
+<p>When an expression in the calculator is <em>selected</em>, its corresponding curve is highlighted. Expressions may be selected even when the expressions list is not present. Currently, only one expression may be selected at a time, but in the future it may be possible to select more than one expression.</p>
+<p>When an expression is <em>focused</em>, a cursor appears in it in the expressions list, allowing the expression to be updated with the keypad or a keyboard. A focused expression is always selected, but an expression may be selected without being focused. Only one expression can be focused at a time.</p>
+<h4 id="GraphingCalculator.focusFirstExpression">GraphingCalculator.focusFirstExpression()</h4>
+<p>Focus the first expression in the expressions list. Note that the first expression isn't focused by default because if the calculator is embedded in a page that can be scrolled, the browser will typically scroll the focused expression into view at page load time, which may not be desirable.</p>
+<h4 id="GraphingCalculator.openKeypad">GraphingCalculator.openKeypad()</h4>
+<p>Open the calculator keypad. An expression must be focused for the keypad to be open, so if no expression is focused, this method will focus the first expression. If the onscreen keypad is already open, this method has no effect.</p>
+<p>If the calculator is configured with <code>keypad: false</code>, this method will ensure that some expression is focused but will not display the keypad.</p>
+<h4 id="GraphingCalculator.isAnyExpressionSelected">GraphingCalculator.isAnyExpressionSelected</h4>
+<p>Boolean observable property, true when an expression is selected, false when no expression is selected.</p>
+<h4 id="GraphingCalculator.selectedExpressionId">GraphingCalculator.selectedExpressionId</h4>
+<p>Observable property that holds the <code>id</code> of the currently selected expression, or
+<code>undefined</code> when no expression is selected.</p>
+<h4 id="GraphingCalculator.removeSelected">GraphingCalculator.removeSelected()</h4>
+<p>Remove the selected expression. Returns the <code>id</code> of the expression that was
+removed, or <code>undefined</code> if no expression was selected.</p>
+<p>See <a href="examples/remove-selected.html">examples/remove-selected.html</a> for an example.</p>
+<h2 id="document-colors">Colors</h2>
+<p>Colors are chosen from a default list of 6 colors. These are available through the <strong>Colors</strong> object.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Hex String</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Colors.RED</td>
+<td>#c74440</td>
+</tr>
+<tr>
+<td>Colors.BLUE</td>
+<td>#2d70b3</td>
+</tr>
+<tr>
+<td>Colors.GREEN</td>
+<td>#388c46</td>
+</tr>
+<tr>
+<td>Colors.PURPLE</td>
+<td>#6042a6</td>
+</tr>
+<tr>
+<td>Colors.ORANGE</td>
+<td>#fa7e19</td>
+</tr>
+<tr>
+<td>Colors.BLACK</td>
+<td>#000000</td>
+</tr>
+</tbody>
+</table>
+<p>You may also specify <code>colors</code> as a property on the <code>options</code> object in the constructor, which will override the default color palette. <code>colors</code> must be an object whose values are strings representing <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">valid CSS color values</a>. As a convenience, a calculator instance's current color palette can be accessed via <code>Calculator.colors</code>.</p>
+<p>You can choose the color of a new expression explicitly by setting its color property.</p>
+<p>Note that the ability to override the color palette means that graph states saved in one environment may contain colors not found in another environment. For instance, loading a graph state created with the default palette will yield a graph with colors that are not accessible from your customized color menu in the UI. The best solution is to load only those graphs created in an environment using your custom colors.</p>
+<p>Alternatively, we provide you two ways to handle this problem when calling <code>Calculator.setState</code>. You may either load the state with the saved colors as-is, or you may coerce unavailable colors to their perceptually closest counterparts in your <code>Calculator.colors</code> object (&quot;perceptually closest&quot; in the sense of nearest in the <a href="https://en.wikipedia.org/wiki/Lab_color_space#Perceptual_differences">Lab color space</a>). See the section on <a href="#GraphingCalculator.setState"><em>setState</em></a> for more information.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript">calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'1'</span>,
+  <span class="hljs-attr">latex</span>: <span class="hljs-string">'y=x'</span>,
+  <span class="hljs-attr">color</span>: Desmos.Colors.BLUE
+});
+
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'2'</span>,
+  <span class="hljs-attr">latex</span>: <span class="hljs-string">'y=x + 1'</span>,
+  <span class="hljs-attr">color</span>: <span class="hljs-string">'#ff0000'</span>
+});
+
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'3'</span>,
+  <span class="hljs-attr">latex</span>: <span class="hljs-string">'y=sin(x)'</span>,
+  <span class="hljs-attr">color</span>: calculator.colors.customBlue
+});</code></pre>
+<p>For a live example see <a href="examples/colors.html">examples/colors.html</a>.</p>
+<h2 id="document-styles">Styles</h2>
+<p>Drawing styles for points and curves may be chosen from a set of predefined values,
+which are available through the <strong>Styles</strong> object.</p>
+<p>For points:</p>
+<ul>
+<li><code>Desmos.Styles.POINT</code></li>
+<li><code>Desmos.Styles.OPEN</code></li>
+<li><code>Desmos.Styles.CROSS</code></li>
+</ul>
+<p>For curves:</p>
+<ul>
+<li><code>Desmos.Styles.SOLID</code></li>
+<li><code>Desmos.Styles.DASHED</code></li>
+<li><code>Desmos.Styles.DOTTED</code></li>
+</ul>
+<p>Note that changing the style of a point expression to <code>OPEN</code> or <code>CROSS</code> is only supported for
+points with a <code>dragMode</code> property of <code>NONE</code> (or <code>AUTO</code>, if it would resolve to a static point).
+That means you may need to manually set the <code>dragMode</code> in certain situations.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Make a dashed line</span>
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'line'</span>,
+  <span class="hljs-attr">latex</span>: <span class="hljs-string">'y=x'</span>,
+  <span class="hljs-attr">lineStyle</span>: Desmos.Styles.DASHED
+});
+
+<span class="hljs-comment">// This will render with normal movable point styling, because named point</span>
+<span class="hljs-comment">// assignments result in points with a `dragMode` of `XY` by default</span>
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'pointA'</span>,
+  <span class="hljs-attr">latex</span>: <span class="hljs-string">'A=(1,2)'</span>,
+  <span class="hljs-attr">pointStyle</span>: Desmos.Styles.CROSS
+});
+
+<span class="hljs-comment">// Now point A will render with `CROSS` styling</span>
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'pointA'</span>,
+  <span class="hljs-attr">dragMode</span>: Desmos.DragModes.NONE
+});
+
+<span class="hljs-comment">// Point B will render as a hole</span>
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'pointB'</span>,
+  <span class="hljs-attr">latex</span>: <span class="hljs-string">'B=(2,4)'</span>,
+  <span class="hljs-attr">dragMode</span>: Desmos.DragModes.NONE,
+  <span class="hljs-attr">pointStyle</span>: Desmos.Styles.OPEN
+});
+
+<span class="hljs-comment">// This point will render with `CROSS` styling, because the default</span>
+<span class="hljs-comment">// `dragMode` for an unassigned point with numeric values is `NONE`</span>
+calculator.setExpression({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'pointC'</span>,
+  <span class="hljs-attr">latex</span>: <span class="hljs-string">'(7,5)'</span>,
+  <span class="hljs-attr">pointStyle</span>: Desmos.Styles.CROSS
+});</code></pre>
+<h2 id="document-fontssizes">Font Sizes</h2>
+<p>Though the calculator's <code>fontSize</code> property can be set to any numeric value, we provide a set of predefined font sizes for convenience. These are available through the <strong>FontSizes</strong> object.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Pixel Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FontSizes.VERY_SMALL</td>
+<td>9</td>
+</tr>
+<tr>
+<td>FontSizes.SMALL</td>
+<td>12</td>
+</tr>
+<tr>
+<td>FontSizes.MEDIUM</td>
+<td>16</td>
+</tr>
+<tr>
+<td>FontSizes.LARGE</td>
+<td>20</td>
+</tr>
+<tr>
+<td>FontSizes.VERY_LARGE</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+<p>You can set the base font size for the calculator through the <em>updateSettings</em> method.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript">calculator.updateSettings({ <span class="hljs-attr">fontSize</span>: Desmos.FontSizes.LARGE });
+
+calculator.updateSettings({ <span class="hljs-attr">fontSize</span>: <span class="hljs-number">11</span> });</code></pre>
+<h2 id="document-languages">Languages</h2>
+<p>The calculator's display language can be set to any of our supported languages using the <code>updateSettings</code> method. Languages are not provided by default, but they may be requested from the <code>api/</code> endpoint via a <code>lang</code> URL parameter. The requested translations are bundled into <code>calculator.js</code> before it is returned, and those languages become available to any calculator instance in the page. (If you are self-hosting the API code and are interested in using languages other than English, contact partnerships@desmos.com for more information.)</p>
+<p>To inspect the available languages at runtime, we expose a <code>Desmos.supportedLanguages</code> property that provides an array of language codes suitable for passing into <code>Calculator.updateSettings</code>.</p>
+<p>Note that the level of translation coverage varies somewhat by language, but translations are regularly added and improved. Available languages are:</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>German</td>
+<td>'de'</td>
+</tr>
+<tr>
+<td>English (U.S.)</td>
+<td>'en'</td>
+</tr>
+<tr>
+<td>Spanish</td>
+<td>'es'</td>
+</tr>
+<tr>
+<td>Estonian</td>
+<td>'et'</td>
+</tr>
+<tr>
+<td>French</td>
+<td>'fr'</td>
+</tr>
+<tr>
+<td>Indonesian</td>
+<td>'id'</td>
+</tr>
+<tr>
+<td>Italian</td>
+<td>'it'</td>
+</tr>
+<tr>
+<td>Japanese</td>
+<td>'ja'</td>
+</tr>
+<tr>
+<td>Korean</td>
+<td>'ko'</td>
+</tr>
+<tr>
+<td>Dutch</td>
+<td>'nl'</td>
+</tr>
+<tr>
+<td>Polish</td>
+<td>'pl'</td>
+</tr>
+<tr>
+<td>Portuguese (Brazil)</td>
+<td>'pt-BR'</td>
+</tr>
+<tr>
+<td>Russian</td>
+<td>'ru'</td>
+</tr>
+<tr>
+<td>Swedish</td>
+<td>'sv-SE'</td>
+</tr>
+<tr>
+<td>Thai</td>
+<td>'th'</td>
+</tr>
+<tr>
+<td>Turkish</td>
+<td>'tr'</td>
+</tr>
+<tr>
+<td>Vietnamese</td>
+<td>'vi'</td>
+</tr>
+<tr>
+<td>Chinese (Simplified)</td>
+<td>'zh-CN'</td>
+</tr>
+<tr>
+<td>Chinese (Traditional)</td>
+<td>'zh-TW'</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Include Spanish translations --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6&amp;lang=es"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- Include Spanish and French translations --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6&amp;lang=es,fr"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- Include all available translations --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6&amp;lang=all"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+<pre><code class="language-javascript"><span class="hljs-comment">// Inspect available languages</span>
+Desmos.supportedLanguages; <span class="hljs-comment">// ['en', 'es', 'fr']</span>
+
+<span class="hljs-comment">// Set a calculator instance to French</span>
+calculator.updateSettings({ <span class="hljs-attr">language</span>: <span class="hljs-string">'fr'</span> });</code></pre>
+<p>For a live example see <a href="examples/languages.html">examples/languages.html</a>.</p>
+<h2 id="document-accessibility">Accessibility</h2>
+<p>In service of our mission to help every student learn math and love learning math, we strive to make our tools accessible to the widest possible audience. See our <a href="https://www.desmos.com/accessibility">accessibility documentation</a> to learn about features that help enable broad access.</p>
+<p>The default calculator configurations represent our current best thinking about how to make the calculator accessible to everyone. Changing certain options can have important accessibility implications, which API consumers should consider carefully.</p>
+<ul>
+<li><code>settingsMenu</code>: The settings menu contains controls for making items in the calculator easier to see, such as the display size of items in the expressions list and on the graph paper, as well as reverse contrast mode. It also contains the controls for switching Braille modes. When setting this option to <code>false</code>, you should provide alternate methods for users to set <code>projectorMode</code>, <code>reverseContrast</code>, and <code>brailleMode</code>.</li>
+<li><code>brailleControls</code>: Setting this option to <code>false</code> means that users will not be able to set the Braille mode through the settings menu or with <a href="/graphingshortcuts#Braille">keyboard shortcuts</a>. When setting this option to <code>false</code>, you should provide a way for users to set <code>brailleMode</code> externally. Be aware that some users may find it valuable to switch back and forth between a Braille mode and visually typeset math as they are using the calculator, so we recommend supporting keyboard shortcuts for switching between modes.</li>
+<li><code>audio</code>: Disabling graph sonification means that a user who has difficulty seeing the graph paper will not be able to get auditory information about the shape of the graph. When setting this option to <code>false</code>, you should have a plan for accommodating people who use sound to access graphical information.</li>
+</ul>
+<p>Desmos has developed a library called <a href="abraham.html">Abraham</a> for translating between LaTeX and the Braille math codes Nemeth and UEB. If you would like to use this library, please contact us at <a href="mailto:partnerships@desmos.com">partnerships@desmos.com</a>.</p>
+<h2 id="document-image-uploads">Image uploads</h2>
+<p>By default, users can upload images to use on graphs by either dragging images to the expressions list, or selecting &quot;Image&quot; from the &quot;Add Expression&quot; menu.</p>
+<p>Image uploads can be disabled by passing <code>{images: false}</code> as a constructor option.</p>
+<p>When users upload images, image data will be stored inline with graph states as data URLs. Graph states that contain inline images are typically much larger than other graph states.</p>
+<p>An alternative is available that can significantly reduce the size of graph states that contain images by storing the images separately so that only the image URL is stored in the state. To enable this behavior, specify <code>{imageUploadCallback: function (file, cb) {/*...*/}}</code> as a constructor option.</p>
+<p>The <code>imageUploadCallback</code> function will be called whenever a user uploads an image file. The first argument is a <a href="https://developer.mozilla.org/en-US/docs/Web/API/File">File</a> object that you should serialize to a location with a publicly accessible URL. The second argument is a callback with the signature <code>cb(err, url)</code> that should be called with either an error or the URL of the serialized image.</p>
+<p>When storing images remotely, it is important that they are either served from the same domain as the page that the calculator is displayed on, or that proper <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS">CORS Access-Control-Allow-Origin</a> headers are set to allow the images to be loaded on a different domain.</p>
+<p>The default <code>imageUploadCallback</code> function is provided as <code>Desmos.imageFileToDataURL(file, cb)</code> as a convenience. It will covert the file to a data URL, taking EXIF orientation headers into account and recompressing large images. The passed callback will be called with either an error as the first argument, or the data URL as a second argument.</p>
+<p>Example:</p>
+<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">imageUploadCallback</span>(<span class="hljs-params">file, cb</span>) </span>{
+  Desmos.imageFileToDataURL(file, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, dataURL</span>) </span>{
+    <span class="hljs-keyword">if</span> (err) {
+      cb(err);
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-comment">// Send the data to your server, and arrange for your server to</span>
+    <span class="hljs-comment">// respond with a URL</span>
+    $.post(<span class="hljs-string">'https://example.com/serialize-image'</span>, { <span class="hljs-attr">imageData</span>: dataURL }).then(
+      <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>) </span>{
+        cb(<span class="hljs-literal">null</span>, msg.url);
+      }, <span class="hljs-comment">// Success, call the callback with a URL</span>
+      <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        cb(<span class="hljs-literal">true</span>);
+      } <span class="hljs-comment">// Indicate that an error has occurred</span>
+    );
+  });
+}
+
+Desmos.GraphingCalculator(elt, { <span class="hljs-attr">imageUploadCallback</span>: imageUploadCallback });</code></pre>
+<p>For a working example, see <a href="examples/image-upload-callback.html">examples/image-upload-callback.html</a>.</p>
+<h2 id="document-basic-calculators">Basic Calculators</h2>
+<p>In addition to the graphing calculator, Desmos offers a <a href="/fourfunction">four function calculator</a> and a <a href="/scientific">scientific calculator</a>. The four function and scientific calculators are created in a similar way to the graphing calculator, and support a subset of its functionality.</p>
+<p>Note that access to the four function and scientific calculators must be separately enabled per API key. You can see which features are enabled for your API key by reading <code>Desmos.enabledFeatures</code>. Calling a constructor for a feature that is not enabled is an error.</p>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// All features enabled</span>
+Desmos.enabledFeatures ===
+  {
+    <span class="hljs-attr">GraphingCalculator</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">FourFunctionCalculator</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">ScientificCalculator</span>: <span class="hljs-literal">true</span>
+  };
+
+<span class="hljs-comment">// Only graphing calculator enabled</span>
+Desmos.enabledFeatures ===
+  {
+    <span class="hljs-attr">GraphingCalculator</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">FourFunctionCalculator</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">ScientificCalculator</span>: <span class="hljs-literal">false</span>
+  };</code></pre>
+<h3 id="document-basic-calculator-constructors">Constructors</h3>
+<h4><em>constructor</em> FourFunctionCalculator(<em>element</em>, [<em>options</em>])</h4>
+<p>Creates a four function calculator object to control the calculator embedded in the DOM element specified by <em>element</em>.</p>
+<p><em>options</em> is an optional object that specifies features that should be included or excluded.</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>links</td>
+<td>true</td>
+<td>Allow external hyperlinks (e.g. to braille examples)</td>
+</tr>
+<tr>
+<td>additionalFunctions</td>
+<td>['sqrt']</td>
+<td>Picks the extra function(s) that appear in the top bar. Maximum 2, minimum 1. Options include 'exponent', 'percent', 'fraction', and 'sqrt'. Pass in a single string or an array of strings.</td>
+</tr>
+<tr>
+<td>fontSize</td>
+<td>16</td>
+<td>Base font size.</td>
+</tr>
+<tr>
+<td>invertedColors</td>
+<td>false</td>
+<td>Display the calculator with an inverted color scheme.</td>
+</tr>
+<tr>
+<td>settingsMenu</td>
+<td>true</td>
+<td>Display the settings menu. See <a href="#document-accessibility">Accessibility Notes</a>.</td>
+</tr>
+<tr>
+<td>language</td>
+<td>'en'</td>
+<td>Language. See the <a href="#document-languages">Languages section</a> for more information.</td>
+</tr>
+<tr>
+<td>brailleMode</td>
+<td><code>'none'</code></td>
+<td>Set the input and output Braille code for persons using refreshable Braille displays. Valid options are 'nemeth', 'ueb', or 'none'.</td>
+</tr>
+<tr>
+<td>sixKeyInput</td>
+<td>false</td>
+<td>Allow users to write six-dot Braille characters using the Home Row keys (S, D, F, J, K, and L). Requires that brailleMode be 'nemeth' or 'ueb'.</td>
+</tr>
+<tr>
+<td>projectorMode</td>
+<td>false</td>
+<td>Display the calculator in a larger font.</td>
+</tr>
+<tr>
+<td>decimalToFraction</td>
+<td>false</td>
+<td>When <code>true</code>, users are able to toggle between decimal and fraction output in evaluations if Desmos detects a good rational approximation.</td>
+</tr>
+<tr>
+<td>capExpressionSize</td>
+<td>false</td>
+<td>Limit the size of an expression to 500 LaTeX tokens</td>
+</tr>
+</tbody>
+</table>
+<p>For a working example see <a href="examples/four-function-with-percent.html">examples/four-function-with-percent.html</a>.</p>
+<h4><em>constructor</em> ScientificCalculator(<em>element</em>, [<em>options</em>])</h4>
+<p>Creates a scientific calculator object to control the calculator embedded in the DOM element specified by <em>element</em>.</p>
+<p><em>options</em> is an optional object that specifies features that should be included or excluded.</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>links</td>
+<td>true</td>
+<td>Allow external hyperlinks (e.g. to braille examples)</td>
+</tr>
+<tr>
+<td>qwertyKeyboard</td>
+<td>true</td>
+<td>Display the keypad in QWERTY layout (<em>false</em> shows an alphabetical layout)</td>
+</tr>
+<tr>
+<td>degreeMode</td>
+<td>false</td>
+<td>When <code>true</code>, trig functions assume arguments are in degrees. Otherwise, arguments are assumed to be in radians.</td>
+</tr>
+<tr>
+<td>fontSize</td>
+<td>16</td>
+<td>Base font size.</td>
+</tr>
+<tr>
+<td>invertedColors</td>
+<td>false</td>
+<td>Display the calculator with an inverted color scheme.</td>
+</tr>
+<tr>
+<td>settingsMenu</td>
+<td>true</td>
+<td>Display the settings menu. See <a href="#document-accessibility">Accessibility Notes</a>.</td>
+</tr>
+<tr>
+<td>language</td>
+<td>'en'</td>
+<td>Language. See the <a href="#document-languages">Languages section</a> for more information.</td>
+</tr>
+<tr>
+<td>brailleMode</td>
+<td><code>'none'</code></td>
+<td>Set the input and output Braille code for persons using refreshable Braille displays. Valid options are 'nemeth', 'ueb', or 'none'.</td>
+</tr>
+<tr>
+<td>sixKeyInput</td>
+<td>false</td>
+<td>Allow users to write six-dot Braille characters using the Home Row keys (S, D, F, J, K, and L). Requires that brailleMode be 'nemeth' or 'ueb'.</td>
+</tr>
+<tr>
+<td>brailleExpressionDownload</td>
+<td>true</td>
+<td>Allows the user to export a Braille rendering of the expression list. Requires that brailleMode be 'nemeth' or 'ueb'.</td>
+</tr>
+<tr>
+<td>projectorMode</td>
+<td>false</td>
+<td>Display the calculator in a larger font.</td>
+</tr>
+<tr>
+<td>decimalToFraction</td>
+<td>true</td>
+<td>When <code>true</code>, users are able to toggle between decimal and fraction output in evaluations if Desmos detects a good rational approximation.</td>
+</tr>
+<tr>
+<td>capExpressionSize</td>
+<td>false</td>
+<td>Limit the size of an expression to 500 LaTeX tokens</td>
+</tr>
+<tr>
+<td>functionDefinition</td>
+<td>true</td>
+<td>Allow function definition, i.e. <code>f(x) = 2x</code></td>
+</tr>
+<tr>
+<td>autosize</td>
+<td>true</td>
+<td>Determine whether the calculator should automatically resize whenever there are changes to <em>element</em>'s dimensions. If set to <code>false</code> you will need to explicitly call <code>.resize()</code> in certain situations. See <a href="#document-layout">.resize()</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">var</span> elt1 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'four-function-calculator'</span>);
+<span class="hljs-keyword">var</span> calculator1 = Desmos.FourFunctionCalculator(elt1);
+
+<span class="hljs-keyword">var</span> elt2 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'scientific-calculator'</span>);
+<span class="hljs-keyword">var</span> calculator2 = Desmos.ScientificCalculator(elt2);</code></pre>
+<p>The object returned is a Desmos.BasicCalculator object, which exposes the following methods and observable events:</p>
+<h4>BasicCalculator.getState()</h4>
+<h4>BasicCalculator.setState(<em>state</em>, <em>[options]</em>)</h4>
+<h4>BasicCalculator.setBlank(<em>[options]</em>)</h4>
+<h4>BasicCalculator.undo()</h4>
+<h4>BasicCalculator.redo()</h4>
+<h4>BasicCalculator.clearHistory()</h4>
+<h4>BasicCalculator.resize()</h4>
+<h4>BasicCalculator.focusFirstExpression()</h4>
+<h4>BasicCalculator.observeEvent('change', function () {/<em>...</em>/})</h4>
+<h4>BasicCalculator.unobserveEvent('change')</h4>
+<h4>BasicCalculator.destroy()</h4>
+<p>The methods and events above function exactly as described for the graphing calculator. The <em>updateSettings</em> method is more limited in that it only supports a subset of the options available in the graphing calculator.</p>
+<h4>BasicCalculator.updateSettings(<em>[options]</em>)</h4>
+<p>Updates the current calculator settings. This method behaves identically to the <a href="#document-update-settings">graphing calculator method</a>,
+except the properties available for updating are limited to the basic calculator options.</p>
+<p>For working examples of the four function and scientific calculators, see</p>
+<ul>
+<li><a href="examples/fourfunction.html">examples/fourfunction.html</a></li>
+<li><a href="examples/scientific.html">examples/scientific.html</a></li>
+</ul>
+<h2 id="document-mathquill">Mathquill</h2>
+<p>Inside of the Desmos Calculator, we use mathquill for all of our equation rendering. We even use mathquill to render all of the math in this documentation. We're basically big fans of Mathquill. You can visit Mathquill at <a href="http://mathquill.com">www.mathquill.com</a>.</p>
+<h2 id="release-cycle">Release cycle</h2>
+<p>New stable versions of the calculator API are released once per year in April. At any given time, there is an experimental preview version, a stable version that is recommended for production, and older versions are frozen.</p>
+<p><strong>Experimental</strong>: The embedded calculator exposed through the API will track changes to the www.desmos.com calculator in real time. In the Experimental version, we may make breaking changes to the API methods and to the calculator’s appearance at any time. The experimental version will generally be available for public preview and comment, but should not be used in production because of the possibility of breaking changes.</p>
+<p><strong>Stable</strong>: When a version of the API is stabilized, we will commit to not making any breaking changes to the API methods, and the embedded calculator will stop tracking changes to the www.desmos.com calculator. We think that it’s important that the visual appearance of the embedded calculator will not change once an API version is stabilized, because this gives our partners precise control over the appearance of their site. Important bug fixes that do not break compatibility are backported from Experimental to Stable.</p>
+<p>The Stable version is the version that is recommended for production use.</p>
+<p><strong>Frozen</strong>: When a new version of the API is stabilized, the previous Stable version will become Frozen. This means that no future changes will be made to it, and it will not receive bug fixes. Partners are encouraged to migrate from Frozen versions to the Stable version in order to keep receiving bug fixes.</p>
+<h2 id="community">Community</h2>
+<p>We manage a pair of google groups for announcements and discussion of the API:</p>
+<ul>
+<li><a href="https://groups.google.com/forum/#!forum/desmos-api-announce">desmos-api-announce</a>: Official announcements of releases and previews of the API. This is a low volume list, and will only have a handful of posts per year. We recommend that all clients subscribe to stay up to date with new releases.</li>
+<li><a href="https://groups.google.com/forum/#!forum/desmos-api-discuss">desmos-api-discuss</a>: General discussion and questions about the API. Posts to this group are open to the public.</li>
+</ul>
+<h2 id="document-api-keys">API Keys</h2>
+<p>In order to include the desmos API in your page, you must supply an API key as a URL parameter, like this:</p>
+<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+<p>The demonstration API key, <code>dcb31709b452b1cf9dc26972add0fda6</code>, is provided for use during development. If you plan to use the API in production, you should contact us by e-mailing partnerships@desmos.com to obtain your own API key.</p>
+<h2 id="self-hosting">Self-hosting the API</h2>
+<p>Some partners prefer to host the Desmos API on their own servers rather than loading it from www.desmos.com. If you choose to self-host the API, we will make a private shared github repository available to you where we will store builds of the API suitable for self-hosting.</p>
+<h2 id="document-collected-examples">Collected Examples</h2>
+<ul>
+<li><a href="examples/parabola.html">examples/parabola.html</a></li>
+<li><a href="examples/fullscreen.html">examples/fullscreen.html</a></li>
+<li><a href="examples/screenshot.html">examples/screenshot.html</a></li>
+<li><a href="examples/async-screenshot.html">examples/async-screenshot.html</a></li>
+<li><a href="examples/mousemove.html">examples/mousemove.html</a></li>
+<li><a href="examples/graphsettings.html">examples/graphsettings.html</a></li>
+<li><a href="examples/slider-bounds.html">examples/slider-bounds.html</a></li>
+<li><a href="examples/column-properties.html">examples/column-properties.html</a></li>
+<li><a href="examples/graphpaper-bounds.html">examples/graphpaper-bounds.html</a></li>
+<li><a href="examples/click-table.html">examples/click-table.html</a></li>
+<li><a href="examples/helper.html">examples/helper.html</a></li>
+<li><a href="examples/remove-selected.html">examples/remove-selected.html</a></li>
+<li><a href="examples/mirror-state.html">examples/mirror-state.html</a></li>
+<li><a href="examples/secret-folders.html">examples/secret-folders.html</a></li>
+<li><a href="examples/fourfunction.html">examples/fourfunction.html</a></li>
+<li><a href="examples/scientific.html">examples/scientific.html</a></li>
+<li><a href="examples/default-state.html">examples/default-state.html</a></li>
+<li><a href="examples/managing-observers.html">examples/managing-observers.html</a></li>
+<li><a href="examples/languages.html">examples/languages.html</a></li>
+<li><a href="examples/colors.html">examples/colors.html</a></li>
+<li><a href="examples/image-upload-callback.html">examples/image-upload-callback.html</a></li>
+<li><a href="examples/dynamic-labels.html">examples/dynamic-labels.html</a></li>
+<li><a href="examples/four-function-with-percent.html">examples/four-function-with-percent.html</a></li>
+</ul>
+
+    </div>
+
+    <div style='clear:both'></div>
+    <footer class="footer" role="contentinfo">
+      <div class="container">
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>
+          &copy; Copyright 2023, Desmos Studio, PBC<br/>
+        </p>
+      </div>
+    </footer>
+
+  <script src="api_docs-ea6a84d1ebf2caedce0095e0adc2a1bfd1f66206.js"></script>
+
+  </body>
+</html>

@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 
 
-<html no_gl="true" lang="en" class="dcg-calculator-api-container">
+<html no_gl="true" lang="zh-CN" class="dcg-calculator-api-container">
 <head>
-  <link rel="stylesheet" href="assets/build/calculator_geometry-dad948a7241ef07a5468b0fab656090ba1f083ce.css" />
-  <link rel="icon" href="assets/img/apps/geometry/favicon.ico" type="image/x-icon" />
-  
+  <link rel="stylesheet" href="/assets/build/calculator_desktop-dad948a7241ef07a5468b0fab656090ba1f083ce.css" />
+  <link rel="icon" href="/assets/img/apps/graphing/favicon.ico" type="image/x-icon" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="manifest" href="assets/pwa/app.webmanifest">
+  <link rel="manifest" href="/assets/pwa/app.webmanifest">
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!--chrome=1 enables chrome frame; IE=edge specifies that IE should run in the highest mode available to that version of IE.-->
 <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
-<meta name="Description" content="Explore math with our beautiful, free online graphing calculator. Graph functions, plot points, visualize algebraic equations, add sliders, animate graphs, and more." />
+<meta name="Description" content="免费使用Desmos精美的在线图形计算器来探索数学奥妙。功能包含绘制函数图形和散点图，视化代数方程式、新增滑块，动画图表等。快来使用我们既精美又免费的在线图形计算器，一同探索数学！其丰富功能包括绘制函数图形、散点图、代数方程式可视化、添加滑块和图表动画等等。" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="og:title" content="Desmos | Geometry" />
+<meta property="og:title" content="Desmos | 图形计算器" />
 <meta property="og:site_name" content="Desmos" />
 <meta property="og:image" content="https://s3.amazonaws.com/desmos/img/calc_thumb.png" />
 <link rel="image_src" href="https://s3.amazonaws.com/desmos/img/calc_thumb.png" />
@@ -25,96 +24,96 @@
 
   
     
-      <link rel="canonical" href="https://www.desmos.com/geometry" />
+      <link rel="canonical" href="https://www.desmos.com/calculator?lang=zh-CN" />
     
   
     
-      <link rel="alternate" hreflang="de" href="https://www.desmos.com/geometry?lang=de" />
+      <link rel="alternate" hreflang="de" href="https://www.desmos.com/calculator?lang=de" />
     
   
     
-      <link rel="alternate" hreflang="es" href="https://www.desmos.com/geometry?lang=es" />
+      <link rel="alternate" hreflang="es" href="https://www.desmos.com/calculator?lang=es" />
     
   
     
-      <link rel="alternate" hreflang="et" href="https://www.desmos.com/geometry?lang=et" />
+      <link rel="alternate" hreflang="et" href="https://www.desmos.com/calculator?lang=et" />
     
   
     
-      <link rel="alternate" hreflang="fr" href="https://www.desmos.com/geometry?lang=fr" />
+      <link rel="alternate" hreflang="fr" href="https://www.desmos.com/calculator?lang=fr" />
     
   
     
-      <link rel="alternate" hreflang="id" href="https://www.desmos.com/geometry?lang=id" />
+      <link rel="alternate" hreflang="id" href="https://www.desmos.com/calculator?lang=id" />
     
   
     
-      <link rel="alternate" hreflang="it" href="https://www.desmos.com/geometry?lang=it" />
+      <link rel="alternate" hreflang="it" href="https://www.desmos.com/calculator?lang=it" />
     
   
     
-      <link rel="alternate" hreflang="ja" href="https://www.desmos.com/geometry?lang=ja" />
+      <link rel="alternate" hreflang="ja" href="https://www.desmos.com/calculator?lang=ja" />
     
   
     
-      <link rel="alternate" hreflang="ko" href="https://www.desmos.com/geometry?lang=ko" />
+      <link rel="alternate" hreflang="ko" href="https://www.desmos.com/calculator?lang=ko" />
     
   
     
-      <link rel="alternate" hreflang="nl" href="https://www.desmos.com/geometry?lang=nl" />
+      <link rel="alternate" hreflang="nl" href="https://www.desmos.com/calculator?lang=nl" />
     
   
     
-      <link rel="alternate" hreflang="pl" href="https://www.desmos.com/geometry?lang=pl" />
+      <link rel="alternate" hreflang="pl" href="https://www.desmos.com/calculator?lang=pl" />
     
   
     
-      <link rel="alternate" hreflang="pt-BR" href="https://www.desmos.com/geometry?lang=pt-BR" />
+      <link rel="alternate" hreflang="pt-BR" href="https://www.desmos.com/calculator?lang=pt-BR" />
     
   
     
-      <link rel="alternate" hreflang="ru" href="https://www.desmos.com/geometry?lang=ru" />
+      <link rel="alternate" hreflang="ru" href="https://www.desmos.com/calculator?lang=ru" />
     
   
     
-      <link rel="alternate" hreflang="sv-SE" href="https://www.desmos.com/geometry?lang=sv-SE" />
+      <link rel="alternate" hreflang="sv-SE" href="https://www.desmos.com/calculator?lang=sv-SE" />
     
   
     
-      <link rel="alternate" hreflang="th" href="https://www.desmos.com/geometry?lang=th" />
+      <link rel="alternate" hreflang="th" href="https://www.desmos.com/calculator?lang=th" />
     
   
     
-      <link rel="alternate" hreflang="tr" href="https://www.desmos.com/geometry?lang=tr" />
+      <link rel="alternate" hreflang="tr" href="https://www.desmos.com/calculator?lang=tr" />
     
   
     
-      <link rel="alternate" hreflang="uk" href="https://www.desmos.com/geometry?lang=uk" />
+      <link rel="alternate" hreflang="uk" href="https://www.desmos.com/calculator?lang=uk" />
     
   
     
-      <link rel="alternate" hreflang="vi" href="https://www.desmos.com/geometry?lang=vi" />
+      <link rel="alternate" hreflang="vi" href="https://www.desmos.com/calculator?lang=vi" />
     
   
     
-      <link rel="alternate" hreflang="zh-CN" href="https://www.desmos.com/geometry?lang=zh-CN" />
+      <link rel="alternate" hreflang="zh-CN" href="https://www.desmos.com/calculator?lang=zh-CN" />
     
   
     
-      <link rel="alternate" hreflang="zh-TW" href="https://www.desmos.com/geometry?lang=zh-TW" />
+      <link rel="alternate" hreflang="zh-TW" href="https://www.desmos.com/calculator?lang=zh-TW" />
     
   
     
-      <link rel="alternate" hreflang="en" href="https://www.desmos.com/geometry" />
+      <link rel="alternate" hreflang="en" href="https://www.desmos.com/calculator" />
     
   
     
-      <link rel="alternate" hreflang="x-default" href="https://www.desmos.com/geometry" />
+      <link rel="alternate" hreflang="x-default" href="https://www.desmos.com/calculator" />
     
   
 
 
-<title>Desmos | Geometry</title>
+<title>Desmos | 图形计算器</title>
 
 <style type='text/css'>
   body {
@@ -246,7 +245,7 @@
 </style>
 
 </head>
-<body data-load-data="{&quot;seed&quot;:&quot;4a02657a240b4c899f3e36e0b5d04219&quot;}" data-country="CN">
+<body data-load-data="{&quot;seed&quot;:&quot;9c72cfd8308749bb8b4c2205428c7084&quot;}" data-country="CN">
   <div class="dcg-loading-div-container">
   <div class="dcg-loading-background-div"></div>
   <div class="dcg-loading-div">Loading...</div>
@@ -291,6 +290,6 @@
  <!-- Make sure we don't use pushstate on file protocol -->
 
 
-  <script src="assets/build/calculator_geometry-cd2e0e434bf6c890558c4e38d55a038188e87bda.js"></script>
+  <script src="/assets/build/calculator_desktop-847d218fd1a256e20209bf697c05676071994cdc.js"></script>
 </body>
 </html>

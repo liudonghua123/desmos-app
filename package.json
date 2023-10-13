@@ -1,0 +1,14 @@
+{
+  "name": "desmos-app",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^1.5.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.5.0"
+  }
+}

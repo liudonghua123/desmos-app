@@ -15,7 +15,7 @@ defaults:
 permissions: write-all
 
 env:
-  APP_NAME: desmos_app
+  APP_NAME: desmos-app
 
 jobs:
   build-native-executable:
